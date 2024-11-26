@@ -327,35 +327,35 @@ $message = new AIpi\Message('Hello!', ['role' => AIpi\MessageRole::USER, 'type' 
 Supported models by vendors.
 
 **OpenAI**
-- gpt-4o
-- gpt-4o-mini
-- chatgpt-4o-latest
-- o1-preview
-- o1-mini
-- gpt-4
-- gpt-4-turbo
-- gpt-4-turbo-preview
-- text-embedding-3-large
-- text-embedding-3-small
-- text-embedding-ada-002
-- dall-e-3
-- dall-e-2
-- tts-1
-- tts-1-hd
-- whisper-1
-- omni-moderation-latest
-- text-moderation-latest
-- text-moderation-stable
+- openai-gpt-4o
+- openai-gpt-4o-mini
+- openai-chatgpt-4o-latest
+- openai-o1-preview
+- openai-o1-mini
+- openai-gpt-4
+- openai-gpt-4-turbo
+- openai-gpt-4-turbo-preview
+- openai-text-embedding-3-large
+- openai-text-embedding-3-small
+- openai-text-embedding-ada-002
+- openai-dall-e-3
+- openai-dall-e-2
+- openai-tts-1
+- openai-tts-1-hd
+- openai-whisper-1
+- openai-omni-moderation-latest
+- openai-text-moderation-latest
+- openai-text-moderation-stable
 
 **Anthropic**
-- claude-3-5-sonnet-latest
-- claude-3-5-haiku-latest
-- claude-3-opus-latest
+- anthropic-claude-3-5-sonnet-latest
+- anthropic-claude-3-5-haiku-latest
+- anthropic-claude-3-opus-latest
 
 **Google**
-- gemini-1.5-flash
-- gemini-1.5-flash-8b
-- gemini-1.5-pro
+- google-gemini-1.5-flash
+- google-gemini-1.5-flash-8b
+- google-gemini-1.5-pro
 <br>
 
 ### Add Models
