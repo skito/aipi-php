@@ -1,4 +1,10 @@
 # AIpi - Universal API client for common AI models
+![GitHub release (latest by date)](https://img.shields.io/badge/php-%3E%3D7.4-blue)
+![GitHub release (latest by date)](https://img.shields.io/badge/license-Apache2.0-blue)
+![GitHub release (latest by date)](https://img.shields.io/badge/-OpenAI-16a180)
+![GitHub release (latest by date)](https://img.shields.io/badge/-Anthropic-ebdbbc)
+![GitHub release (latest by date)](https://img.shields.io/badge/-Google-4286f5)
+
 Simple lightweight PHP library for interacting with common AI models, that provides universal interface for all models.
 
 ⚡ No dependencies, just native PHP. cURL required.<br>
