@@ -2,7 +2,7 @@
     "name": "skito/aipi",
     "description": "AIpi - Universal API client for common AI models",
     "type": "library",
-    "version": "1.0.0",
+    "version": "1.0",
     "autoload": {
         "files": [
             "src/autoloader.php"
