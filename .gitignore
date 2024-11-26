@@ -1,0 +1,8 @@
+.vscode/
+test/
+test.php
+test.jpg
+Dockerfile
+docker-compose.yml
+/vendor/
+/composer.lock
