@@ -4,7 +4,7 @@
 ![GitHub release (latest by date)](https://img.shields.io/badge/-Anthropic-ebdbbc)
 ![GitHub release (latest by date)](https://img.shields.io/badge/-Google-4286f5)
 
-Simple lightweight PHP library for interacting with common AI models, that provides universal interface for all models.
+Simple lightweight PHP library for interacting with common AI models, that provides universal interface.
 
 ⚡ No dependencies, just native PHP. cURL required.<br>
 🤖 Multimodel support. Unified API for all models.<br>
