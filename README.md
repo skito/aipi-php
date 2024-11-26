@@ -1,12 +1,13 @@
 # AIpi - Universal API client for common AI models
 Simple lightweight PHP library for interacting with common AI models, that provides universal interface for all models.
 
-💡 No dependencies, just native PHP. cURL required.
-🤖 Multimodel support. Unified API for all models.
-🔧 Tools support & agentic - autoresolve tools calls with callbacks.
-🚀 Extendable - easy to add your own models and tools.
-📦 No composer required! But composer compatible.
+⚡ No dependencies, just native PHP. cURL required.<br>
+🤖 Multimodel support. Unified API for all models.<br>
+🔧 Tools support & agentic - autoresolve tools calls with callbacks.<br>
+🚀 Extendable - easy to add your own models and tools.<br>
+📦 No composer required! But composer compatible.<br>
 
+<br>
 
 ## Setup
 You can choose to use the autoloader or include the full source at once.
@@ -18,19 +19,17 @@ require_once 'src/autoload.php';
 Or include full source at once:
 ```php
 require_once 'src/loadall.php';
+```
 Or using composer:
 ```bash
 composer require skito/aipi
 ```
 
+<br>
+
 ## Quick start
 
-### Basic usage
-
-**COMMUNICATION SEQUENCE**
-1. [APP] (message)--> [AI MODEL]
-2. [APP] <--(message) [AI MODEL]
-
+### [BASIC USAGE]
 ```php
 /* ******************** */
 /* Let's start with GPT */
@@ -68,13 +67,15 @@ else echo $thread->GetLastError();
 // print_r($thread->messages);
 ```
 
-### With tools
-
 **COMMUNICATION SEQUENCE**
+```
 1. [APP] (message)--> [AI MODEL]
-2. [APP] <-----(call) [AI MODEL]
-3. [APP] (result)---> [AI MODEL]
-4. [APP] <--(message) [AI MODEL]
+2. [APP] <--(message) [AI MODEL]
+```
+<br>
+
+### [WITH TOOLS]
+Use tools for agentic behaviour.
 
 #### Custom tool example
 ```php
@@ -164,8 +165,16 @@ else
 // print_r($thread->messages);
 ```
 
+**COMMUNICATION SEQUENCE**
+```
+1. [APP] (message)--> [AI MODEL]
+2. [APP] <-----(call) [AI MODEL]
+3. [APP] (result)---> [AI MODEL]
+4. [APP] <--(message) [AI MODEL]
+```
+<br>
 
-### Vision
+### [VISION]
 Depending on the model, you can work with binary data or links.
 
 #### GPT
@@ -243,9 +252,12 @@ if ($message)
 }
 else echo $thread->GetLastError();
 ```
+<br>
 
-#### More examples
+### [MORE EXAMPLES]
 For more examples, please refer to the models docs and the [demo](demo) folder.
+
+<br>
 
 ## Tools and Toolbox
 Tools are definitions of functions that can be called by the AI model. You can make your own tool definitions such as ``Tools/FunctionCall`` to be used in the thread.
@@ -253,6 +265,8 @@ Tools are definitions of functions that can be called by the AI model. You can m
 Toolbox is a collection of predefined tool configurations. You can use the ones that come with this package ormake your own.
 
 Learn more here: [Add Tools](docs/add_tools.md)
+
+<br>
 
 ## Constructors and common options
 You have different options to create a new thread and message.
@@ -292,6 +306,8 @@ $message = new AIpi\Message('Hello!', ['type' => AIpi\MessageType::TEXT]);
 $message = new AIpi\Message('Hello!', ['role' => AIpi\MessageRole::USER, 'type' => AIpi\MessageType::TEXT]);
 ```
 
+<br>
+
 ## Supported models
 Supported models by vendors.
 
@@ -325,10 +341,13 @@ Supported models by vendors.
 - gemini-1.5-flash
 - gemini-1.5-flash-8b
 - gemini-1.5-pro
+<br>
 
 ### Add Models
 You can add your own models by creating a new class that extends `AIpi\ModelBase` and implementing the `Call` method.
 Learn more here: [Add Models](docs/add_models.md)
+
+<br>
 
 ## Requests and support
 For any feedback, requests, questions or issues, please open an issue on GitHub.
