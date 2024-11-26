@@ -1,0 +1,22 @@
+{
+    "name": "skito/aipi",
+    "description": "AIpi - Universal API client for common AI models",
+    "type": "library",
+    "version": "1.0.0",
+    "autoload": {
+        "files": [
+            "src/autoloader.php"
+        ]
+    },
+    "require": {
+        "php": ">=7.4",
+        "ext-curl": "*"
+    },
+    "authors": [
+        {
+            "name": "Dimitar Atanasov",
+            "role": "Developer"
+        }
+    ],
+    "license": "Apache-2.0 license"
+}
