@@ -12,6 +12,15 @@ Simple lightweight PHP library for interacting with common AI models, that provi
 🔧 Tools support & agentic - autoresolve tools calls with callbacks.<br>
 🚀 Extendable - easy to add your own models and tools.<br>
 📦 No composer required! But composer compatible.<br>
+<br>
+
+**Quick links**
+- [Setup](#setup)
+- [Quick start](#quick-start)
+- [Tools and Toolbox](#tools-and-toolbox)
+- [Constructors and common options](#constructors-and-common-options)
+- [Supported models](#supported-models)
+- [Requests and support](#requests-and-support)
 
 <br>
 
