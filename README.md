@@ -268,8 +268,25 @@ else echo $thread->GetLastError();
 ```
 <br>
 
+### [Embeddings]
+```php
+$thread = new AIpi\Thread('openai-text-embedding-3-large', 'my_openai_key');
+$thread->AddMessage(new AIpi\Message('The quick brown fox jumps over the lazy dog.'));
+
+$message = $thread->Run();
+if ($message) 
+{
+    echo $message->content."\r\n";
+    print_r($thread->GetUsage());
+    echo "\r\n\r\n";
+}
+else echo $thread->GetLastError();
+```
+<br>
+
 ### [MORE EXAMPLES]
-For more examples, please refer to the models docs and the [demo](demo) folder.
+For more examples, please refer to the models docs and the [demo](demo) folder.<br>
+Currently supported: ``chat/completitions``, ``vision``, ``image generation``, ``audio generation``, ``audio transcription``, ``document vision``, ``embeddings``, ``moderations``.
 
 <br>
 
