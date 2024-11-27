@@ -8,7 +8,7 @@ Simple lightweight PHP library for interacting with common AI models, that provi
 
 ⚡ No dependencies, just native PHP. cURL required.<br>
 🤖 Multimodel support. Unified API for all models.<br>
-🔧 Tools support & agentic - autoresolve tools calls with callbacks.<br>
+🔧 Tools support & agentic - autoresolve tool calls with callbacks.<br>
 🚀 Extendable - easy to add your own models and tools.<br>
 📦 No composer required! But composer compatible.<br>
 <br>
