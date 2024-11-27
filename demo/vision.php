@@ -2,6 +2,7 @@
 
 require_once '../src/autoloader.php';
 
+use AIpi\Thread;
 use AIpi\Message;
 use AIpi\MessageType;
 
@@ -12,7 +13,7 @@ $my_google_key = 'my_google_key';
 /* ************/
 /* GPT vision */
 /* ************/
-$thread = new AIpi\Thread('openai-gpt-4o', $my_openai_key);
+$thread = new Thread('openai-gpt-4o', $my_openai_key);
 $thread->AddMessage(new Message('What\'s on the photo?'));
 
 // GPT work with links
@@ -32,7 +33,7 @@ else echo $thread->GetLastError();
 /* ***************/
 /* Claude vision */
 /* ***************/
-$thread = new AIpi\Thread('anthropic-claude-3-5-sonnet-latest', $my_anthropic_key);
+$thread = new Thread('anthropic-claude-3-5-sonnet-latest', $my_anthropic_key);
 $thread->AddMessage(new Message('What\'s on the photo?'));
 
 // Claude work with file uploads
@@ -53,7 +54,7 @@ else echo $thread->GetLastError();
 /* ***************/
 /* Gemini vision */
 /* ***************/
-$thread = new AIpi\Thread('google-gemini-1.5-flash', $my_google_key);
+$thread = new Thread('google-gemini-1.5-flash', $my_google_key);
 $thread->AddMessage(new Message('What\'s on the photo?'));
 
 // Gemini work with file uploads
