@@ -202,13 +202,18 @@ use AIpi\Message;
 $thread = new Thread('openai-gpt-4o', 'my_openai_key');
 $thread->AddMessage(new Message('What\'s on the photo?'));
 
-// GPT work with links
-$thread->AddMessage(new Message('https://onlinejpgtools.com/images/examples-onlinejpgtools/orange-tabby-cat.jpg'));
+// Send photo link
+$url = 'https://onlinejpgtools.com/images/examples-onlinejpgtools/orange-tabby-cat.jpg';
+$thread->AddMessage(new Message($url, ['type' => MessageType::LINK]));
+
+// or alternatively send as binary data
+// $src = file_get_contents($url);
+// $thread->AddMessage(new Message($src, ['type' => MessageType::FILE, 'media_type' => 'image/jpeg']));
 
 $message = $thread->Run();
 if ($message) 
 {
-    echo $message->content."\r\n"; // The photo shows an orange tabby cat.
+    echo $message->content."\r\n"; // The photo features a fluffy orange tabby cat sitting ...
     print_r($thread->GetUsage());
     echo "\r\n\r\n";
 }

@@ -57,10 +57,48 @@ class OpenAI_Completions extends ModelBase implements IModel
                 elseif (in_array($msg->role, [MessageRole::TOOL, MessageRole::RESULT]))
                     $role = MessageRole::ASSISTANT;
 
-                $content = $msg->content;
+                // Handle different message types
+                if (in_array($msg->role, [MessageRole::USER, MessageRole::SYSTEM]) && 
+                    in_array($msg->attributes['type'], [MessageType::FILE, MessageType::LINK])) {
+                    
+                    $content = [];
+                    
+                    // Add text content if present
+                    if (!empty($msg->text)) {
+                        $content[] = [
+                            'type' => 'text',
+                            'text' => $msg->text
+                        ];
+                    }
+                    
+                    // Handle file uploads and links
+                    if ($msg->attributes['type'] === MessageType::FILE) {
+                        $mediaType = $msg->attributes['media_type'] ?? 'image/jpeg';
+                        $content[] = [
+                            'type' => 'image_url',
+                            'image_url' => [
+                                'url' => 'data:' . $mediaType . ';base64,' . base64_encode($msg->content)
+                            ]
+                        ];
+                    } else if ($msg->attributes['type'] === MessageType::LINK) {
+                        $content[] = [
+                            'type' => 'image_url',
+                            'image_url' => [
+                                'url' => $msg->content
+                            ]
+                        ];
+                    }
+                    
+                    return [
+                        'role' => $role,
+                        'content' => $content
+                    ];
+                }
+                
+                // Regular text message
                 return [
                     'role' => $role,
-                    'content' => $content
+                    'content' => $msg->content
                 ];
             }, $messages)
         ];

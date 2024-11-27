@@ -16,8 +16,13 @@ $my_google_key = 'my_google_key';
 $thread = new Thread('openai-gpt-4o', $my_openai_key);
 $thread->AddMessage(new Message('What\'s on the photo?'));
 
-// GPT work with links
-$thread->AddMessage(new Message('https://onlinejpgtools.com/images/examples-onlinejpgtools/orange-tabby-cat.jpg'));
+// Send photo link
+$url = 'https://onlinejpgtools.com/images/examples-onlinejpgtools/orange-tabby-cat.jpg';
+$thread->AddMessage(new Message($url, ['type' => MessageType::LINK]));
+
+// or alternatively send as binary data
+// $src = file_get_contents($url);
+// $thread->AddMessage(new Message($src, ['type' => MessageType::FILE, 'media_type' => 'image/jpeg']));
 
 $message = $thread->Run();
 if ($message) 
