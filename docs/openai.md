@@ -4,11 +4,19 @@ This document contains details on how to use OpenAI models. It's important to un
 ## Chat completitions and vision
 With the chat completitions you can communicate with the model using natural language. In addition you can set behaviour parameters, use tools and send files.
 
-API Endpoint: ``https://api.openai.com/v1/chat/completions``
-Supported message roles: `system`, ``user``, ``assistant``
-Supported message types: ``text``, ``link`` (images only)
-Supported tools: ``function calling``
-Supported models:
+**API Endpoint** <br>
+``https://api.openai.com/v1/chat/completions``
+
+**Supported message roles** <br>
+``system``, ``user``, ``assistant``
+
+**Supported message types** <br>
+``text``, ``link`` (images only)
+
+**Supported tools** <br>
+``function calling``
+
+**Supported models:**
 - openai-gpt-4o 
 - openai-gpt-4o-mini
 - openai-chatgpt-4o-latest
@@ -19,7 +27,7 @@ Supported models:
 - openai-gpt-4-turbo-preview
 <br>
 
-** Simple chat **
+**Simple chat**
 ```php
 $thread = new AIpi\Thread('openai-gpt-4o', $my_openai_key);
 $thread->AddMessage(new AIpi\Message('Hi, who are you?'), ['temperature' => 0.5]);
@@ -35,7 +43,7 @@ else echo $thread->GetLastError();
 ```
 <br>
 
-** Roleplay **
+**Role play**
 ```php
 $thread = new AIpi\Thread('openai-gpt-4o', $my_openai_key);
 $thread->AddMessage(new AIpi\Message('You are helpfull assitant of ecommerce shop?', MessageRole::SYSTEM));
@@ -53,7 +61,7 @@ else echo $thread->GetLastError();
 ```
 <br>
 
-** Vision **
+**Vision**
 ```php
 $thread = new Thread('openai-gpt-4o', $my_openai_key);
 $thread->AddMessage(new Message('What\'s on the photo?'));
@@ -77,7 +85,7 @@ else echo $thread->GetLastError();
 ```
 <br>
 
-** Tools (function calling) **
+**Tools (function calling)**
 ```php
 
 /** ************************** */
@@ -136,16 +144,25 @@ else
 ## Image generation
 With the image models you can create or edit images from a text prompt.
 
-API Endpoint: ``https://api.openai.com/v1/images/variations`` and ``https://api.openai.com/v1/images/edits``
-Supported message roles: `system` and ``user`` (both will be merged into one single input)
-Supported message types: ``text``
-Supported tools: N/A
-Supported models:
+**API Endpoint** <br>
+- ``https://api.openai.com/v1/images/variations``
+- ``https://api.openai.com/v1/images/edits``
+
+**Supported message roles** <br>
+``system`` and ``user`` (both will be merged into one single input)
+
+**Supported message types** <br>
+``text``
+
+**Supported tools** <br>
+N/A
+
+**Supported models**
 - openai-dall-e-3
 - openai-dall-e-2
 <br>
 
-** Variation **
+**Variation**
 ```php
 $thread = new Thread('openai-dall-e-2', $my_openai_key, ['n' => 1]);
 $thread->AddMessage(new Message('Make me a photo of cute little kity.'));
@@ -161,7 +178,7 @@ else echo $thread->GetLastError();
 ```
 <br>
 
-** Edit **
+**Edit**
 ```php
 $thread = new Thread('openai-dall-e-2', $my_openai_key, ['n' => 1]);
 
@@ -183,16 +200,24 @@ else echo $thread->GetLastError();
 ## Speech generation
 With the audio models you can create speech from a text prompt.
 
-API Endpoint: ``https://api.openai.com/v1/audio/speech``
-Supported message roles: `system` and ``user`` (both will be merged into one single input)
-Supported message types: ``text``
-Supported tools: N/A
-Supported models:
+**API Endpoint** <br> 
+``https://api.openai.com/v1/audio/speech``
+
+**Supported message roles** <br> 
+``system`` and ``user`` (both will be merged into one single input)
+
+**Supported message types** <br> 
+``text``
+
+**Supported tools** <br> 
+N/A
+
+**Supported models**
 - openai-tts-1
 - openai-tts-1-hd
 <br>
 
-** Example**
+**Example**
 ```php
 $thread = new Thread('openai-tts-1', $my_openai_key);
 $thread->AddMessage(new Message('Hello, how are you?'));
@@ -215,15 +240,24 @@ else echo $thread->GetLastError();
 ## Speech transcription and translation
 With the audio models you can transcribe speech from audio file to text. In addition you can translate the speech directly to English.
 
-API Endpoint: ``https://api.openai.com/v1/audio/transcriptions`` and ``https://api.openai.com/v1/audio/translations``
-Supported message roles: `system` and ``user`` (both will be merged into one single input)
-Supported message types: ``file`` (mp3, mp4, mpeg, mpga, m4a, wav, and webm)
-Supported tools: N/A
-Supported models:
+**API Endpoint** <br>
+- ``https://api.openai.com/v1/audio/transcriptions``
+- ``https://api.openai.com/v1/audio/translations``
+
+**Supported message roles** <br>
+``system`` and ``user`` (both will be merged into one single input)
+
+**Supported message types** <br>
+ ``file`` (mp3, mp4, mpeg, mpga, m4a, wav, and webm)
+
+**Supported tools** <br>
+ N/A
+
+**Supported models**
 - openai-whisper-1
 <br>
 
-** Transcription **
+**Transcription**
 ```php
 $thread = new Thread('openai-whisper-1', $my_openai_key);
 
@@ -245,7 +279,7 @@ else echo $thread->GetLastError();
 ```
 <br>
 
-** Translation **
+**Translation**
 ```php
 $thread = new Thread('openai-whisper-1', $my_openai_key);
 
@@ -271,15 +305,23 @@ else echo $thread->GetLastError();
 ## Embeddings
 Generate text embeddings for building RAG applications.
 
-API Endpoint: ``https://api.openai.com/v1/embeddings``
-Supported message roles: `system` and ``user`` (both will be merged into one single input)
-Supported message types: ``text``
-Supported tools: N/A
-Supported models:
+**API Endpoint** <br>
+``https://api.openai.com/v1/embeddings``
+ 
+**Supported message roles** <br>
+``system`` and ``user`` (both will be merged into one single input)
+
+**Supported message types** <br>
+``text``
+
+**Supported tools** <br>
+N/A
+
+**Supported models**
 - openai-text-embedding-3-small
 - openai-text-embedding-3-large
 
-** Example **
+**Example**
 ```php
 $thread = new Thread('openai-text-embedding-3-large', $my_openai_key);
 $thread->AddMessage(new Message('The red fox jumps over the lazy dog.'));
@@ -296,16 +338,24 @@ else echo $thread->GetLastError();
 ## Moderation
 Evaluate if content is safe and compliant.
 
-API Endpoint: ``https://api.openai.com/v1/moderations``
-Supported message roles: `system` and ``user`` (both will be merged into one single input)
-Supported message types: ``text``
-Supported tools: N/A
-Supported models:
+**API Endpoint** <br>
+``https://api.openai.com/v1/moderations``
+
+**Supported message roles** <br>
+``system`` and ``user`` (both will be merged into one single input)
+
+**Supported message types** <br>
+``text``
+
+**Supported tools:** <br>
+N/A
+
+**Supported models**
 - openai-omni-moderation-latest
 - openai-text-moderation-latest
 - openai-text-moderation-stable
 
-** Example **
+**Example**
 ```php
 $thread = new Thread('openai-omni-moderation-latest', $my_openai_key, []);
 $thread->AddMessage(new Message('I hate you.'));
