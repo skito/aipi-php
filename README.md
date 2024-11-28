@@ -368,12 +368,12 @@ Supported models by vendors.
 - openai-text-moderation-latest
 - openai-text-moderation-stable
 
-**Anthropic**
+**Anthropic** [(examples)](docs/anthropic.md)
 - anthropic-claude-3-5-sonnet-latest
 - anthropic-claude-3-5-haiku-latest
 - anthropic-claude-3-opus-latest
 
-**Google**
+**Google** [(examples)](docs/google.md)
 - google-gemini-1.5-flash
 - google-gemini-1.5-flash-8b
 - google-gemini-1.5-pro
