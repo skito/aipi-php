@@ -13,7 +13,6 @@ $my_google_key = 'my_google_key';
 /* It supports documents, images, audio and video */
 /* ************************************************/
 $thread = new Thread('google-gemini-1.5-flash', $my_google_key);
-$thread->AddMessage(new Message('What\'s on the photo?'));
 
 // Send PDF file for understanding
 $pdf = file_get_contents('https://www.irs.gov/pub/irs-pdf/f4506.pdf');
