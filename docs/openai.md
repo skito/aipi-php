@@ -7,6 +7,7 @@ This document contains details on how to use OpenAI models. It's important to un
 - [Speech transcription and translation](#speech-transcription-and-translation)
 - [Embeddings](#embeddings)
 - [Moderation](#moderation)
+- [Further reading](#further-reading)
 <br>
 
 ## Chat completitions and vision
