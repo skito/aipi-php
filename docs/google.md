@@ -10,7 +10,8 @@ This document contains details on how to use Google DeepMind models. It's import
 With the chat completitions you can communicate with the model using natural language. In addition you can set behaviour parameters, use tools and send files.
 
 **API Endpoint** <br>
-``https://api.deepmind.com/v1/messages``
+``https://generativelanguage.googleapis.com/{apiVersion}/models/{modelName}:generateContent``<br>
+Default api version is ``v1beta``. You can change it to ``v1`` by passing ``apiVersion`` option to the thread.
 
 **Supported message roles** <br>
 ``system``, ``user``, ``assistant``
@@ -141,7 +142,8 @@ else
 Generate text embeddings for building RAG applications.
 
 **API Endpoint** <br>
-``https://api.deepmind.com/v1/embeddings``    
+``https://generativelanguage.googleapis.com/{apiVersion}/models/{modelName}:embedContent``<br>
+Default api version is ``v1beta``. You can change it to ``v1`` by passing ``apiVersion`` option to the thread.
  
 **Supported message roles** <br>
 ``system`` and ``user`` (both will be merged into one single input)
