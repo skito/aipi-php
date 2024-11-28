@@ -347,7 +347,7 @@ $message = new AIpi\Message('Hello!', ['role' => AIpi\MessageRole::USER, 'type' 
 ## Supported models
 Supported models by vendors.
 
-**OpenAI**
+**OpenAI** [(examples)](docs/openai.md)
 - openai-gpt-4o
 - openai-gpt-4o-mini
 - openai-chatgpt-4o-latest

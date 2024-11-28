@@ -8,7 +8,7 @@ use AIpi\Message;
 $my_openai_key = 'my_openai_key';
 
 /* ******************************* */
-/* Genrate audio speech with TTS-1 */
+/* Genarate audio speech with TTS-1 */
 /* ******************************* */
 $thread = new Thread('openai-tts-1', $my_openai_key);
 $thread->AddMessage(new Message('Hello, how are you?'));

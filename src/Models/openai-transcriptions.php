@@ -67,11 +67,15 @@ class OpenAI_Transcriptions extends ModelBase implements IModel
 
         // Find the first file message
         $fileMessage = null;
+        $prompt = '';
         foreach ($messages as $msg) {
-            if ($msg->attributes['type'] === MessageType::FILE && 
+            if ($msg->attributes['type'] === MessageType::TEXT && 
+                in_array($msg->role, [MessageRole::USER, MessageRole::SYSTEM])) {
+                $prompt .= $msg->content."\r\n";
+            }
+            else if ($fileMessage == null &&$msg->attributes['type'] === MessageType::FILE && 
                 in_array($msg->role, [MessageRole::USER, MessageRole::SYSTEM])) {
                 $fileMessage = $msg;
-                break;
             }
         }
 
@@ -89,11 +93,12 @@ class OpenAI_Transcriptions extends ModelBase implements IModel
             'model' => $modelName
         ];
 
+        if (trim($prompt) != '')
+            $data['prompt'] = $prompt;
+
         // Add additional options if provided
         if (isset($options->language))
             $data['language'] = $options->language;
-        if (isset($options->prompt))
-            $data['prompt'] = $options->prompt;
         if (isset($options->response_format))
             $data['response_format'] = $options->response_format;
         if (isset($options->temperature))
