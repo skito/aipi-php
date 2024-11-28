@@ -1,6 +1,14 @@
 # Using OpenAI models
 This document contains details on how to use OpenAI models. It's important to understand that every AI model has its own capabilities and limitations.
 
+- [Chat completitions and vision](#chat-completitions-and-vision)
+- [Image generation](#image-generation)
+- [Speech generation](#speech-generation)
+- [Speech transcription and translation](#speech-transcription-and-translation)
+- [Embeddings](#embeddings)
+- [Moderation](#moderation)
+<br>
+
 ## Chat completitions and vision
 With the chat completitions you can communicate with the model using natural language. In addition you can set behaviour parameters, use tools and send files.
 
