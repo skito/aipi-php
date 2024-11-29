@@ -32,10 +32,10 @@ else echo $thread->GetLastError();
 
 
 
-/* ************************************************/
-/* Analysing files with Grok **********************/
-/* It supports documents, images, audio and video */
-/* ************************************************/
+/* **********************************/
+/* Analysing files with Grok ********/
+/* It supports documents and images */
+/* **********************************/
 $thread = new Thread('xai-grok-vision-beta', $my_xai_key);
 
 // Send PDF file as URL for understanding. Grok work only with URLs for documents.
