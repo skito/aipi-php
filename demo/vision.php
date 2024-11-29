@@ -9,7 +9,7 @@ use AIpi\MessageType;
 $my_openai_key = 'my_openai_key';
 $my_anthropic_key = 'my_anthropic_key';
 $my_google_key = 'my_google_key';
-
+$my_xai_key = 'my_xai_key';
 /* ************/
 /* GPT vision */
 /* ************/
@@ -70,6 +70,30 @@ $message = $thread->Run();
 if ($message) 
 {
     echo $message->content."\r\n"; // That's a fluffy ginger cat grooming itself...
+    print_r($thread->GetUsage());
+    echo "\r\n\r\n";
+}
+else echo $thread->GetLastError();
+
+
+/* ************/
+/* xAI vision */
+/* ************/
+$thread = new Thread('xai-grok-vision-beta', $my_xai_key);
+$thread->AddMessage(new Message('What\'s on the photo?'));
+
+// Send photo link
+$url = 'https://onlinejpgtools.com/images/examples-onlinejpgtools/orange-tabby-cat.jpg';
+$thread->AddMessage(new Message($url, ['type' => MessageType::LINK]));
+
+// or alternatively send as binary data
+// $src = file_get_contents($url);
+// $thread->AddMessage(new Message($src, ['type' => MessageType::FILE, 'media_type' => 'image/jpeg']));
+
+$message = $thread->Run();
+if ($message) 
+{
+    echo $message->content."\r\n"; // The photo shows an orange tabby cat.
     print_r($thread->GetUsage());
     echo "\r\n\r\n";
 }

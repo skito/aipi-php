@@ -377,6 +377,10 @@ Supported models by vendors.
 - google-gemini-1.5-flash
 - google-gemini-1.5-flash-8b
 - google-gemini-1.5-pro
+
+**xAI** [(examples)](docs/xai.md)
+- xai-grok-beta
+- xai-grok-vision-beta
 <br>
 
 ### Add Models
