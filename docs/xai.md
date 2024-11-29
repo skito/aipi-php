@@ -84,6 +84,30 @@ else echo $thread->GetLastError();
 ```
 <br>
 
+**Documents**
+```php
+/* ************************************************/
+/* Analysing files with Grok **********************/
+/* It supports documents, images, audio and video */
+/* ************************************************/
+$thread = new Thread('xai-grok-vision-beta', $my_xai_key);
+
+// Send PDF file as URL for understanding. Grok work only with URLs for documents.
+$pdfURL = 'https://www.irs.gov/pub/irs-pdf/f4506.pdf';
+$thread->AddMessage(new Message('What are the required fields in this form? '.$pdfURL, ['type' => MessageType::TEXT]));
+
+
+$message = $thread->Run();
+if ($message) 
+{
+    echo $message->content."\r\n";
+    print_r($thread->GetUsage());
+    echo "\r\n\r\n";
+}
+else echo $thread->GetLastError();
+```
+<br>
+
 **Tools (function calling)**
 ```php
 
@@ -142,5 +166,5 @@ else
 <br><br>
 
 ## Further reading
-- [xAI API reference](https://api.x.ai/docs)
-- [xAI API keys](https://x.ai/api-keys)
+- [xAI API reference](https://docs.x.ai/api/)
+- [xAI API keys](https://console.x.ai/)
