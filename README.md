@@ -2,7 +2,8 @@
 ![GitHub release (latest by date)](https://img.shields.io/badge/php-%3E%3D7.4-blue)
 ![GitHub release (latest by date)](https://img.shields.io/badge/-OpenAI-16a180)
 ![GitHub release (latest by date)](https://img.shields.io/badge/-Anthropic-ebdbbc)
-![GitHub release (latest by date)](https://img.shields.io/badge/-Google-4286f5)
+![GitHub release (latest by date)](https://img.shields.io/badge/-Google%20DeepMind-4286f5)
+![GitHub release (latest by date)](https://img.shields.io/badge/-xAI-050505)
 
 Simple lightweight PHP library for interacting with common AI models, that provides universal interface.
 
@@ -373,7 +374,7 @@ Supported models by vendors.
 - anthropic-claude-3-5-haiku-latest
 - anthropic-claude-3-opus-latest
 
-**Google** [(examples)](docs/google.md)
+**Google DeepMind** [(examples)](docs/google.md)
 - google-gemini-1.5-flash
 - google-gemini-1.5-flash-8b
 - google-gemini-1.5-pro
