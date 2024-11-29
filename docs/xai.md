@@ -1,5 +1,5 @@
 # Using xAI models
-This document contains details on how to use OpenAI models. It's important to understand that every AI model has its own capabilities and limitations.
+This document contains details on how to use xAI models. It's important to understand that every AI model has its own capabilities and limitations.
 
 - [Chat completitions and vision](#chat-completitions-and-vision)
 - [Further reading](#further-reading)
