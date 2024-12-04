@@ -165,6 +165,38 @@ else
 ```
 <br><br>
 
+## Embeddings
+Generate text embeddings for building RAG applications.
+
+**API Endpoint** <br>
+``https://api.x.ai/v1/embeddings``
+ 
+**Supported message roles** <br>
+``system`` and ``user`` (both will be merged into one single input)
+
+**Supported message types** <br>
+``text``
+
+**Supported tools** <br>
+N/A
+
+**Supported models**
+- xai-embedding-beta
+
+**Example**
+```php
+$thread = new Thread('xai-embedding-beta', $my_xai_key);
+$thread->AddMessage(new Message('The red fox jumps over the lazy dog.'));
+
+$message = $thread->Run();
+if ($message) 
+{
+    echo $message->content."\r\n"; // Embeddings
+}
+else echo $thread->GetLastError();
+```
+<br><br>
+
 ## Further reading
 - [xAI API reference](https://docs.x.ai/api/)
 - [xAI API keys](https://console.x.ai/)
