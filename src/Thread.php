@@ -114,7 +114,7 @@ class Thread
         $this->_outputTokens += $tokens->output ?? 0;
         $this->_files += $tokens->files ?? 0;
 
-        if ($message->role == MessageRole::TOOL && $autocomplete)
+        if ($message->role == MessageRole::TOOL)
         {
             $calls = @json_decode($message->content) ?? (object)['calls' => []];
             foreach ($calls->calls as $call)
@@ -144,7 +144,7 @@ class Thread
                 }
             }
             
-            if ($this->GetLastMessage()->role == MessageRole::RESULT)
+            if ($autocomplete && $this->GetLastMessage()->role == MessageRole::RESULT)
                 $message = $this->Run($autocomplete);
             
         }
