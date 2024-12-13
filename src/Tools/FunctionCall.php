@@ -38,4 +38,43 @@ class FunctionCall implements \AIpi\ITool
         
         return null;
     }
+
+    public function Init($name='')
+    {
+        return new FunctionCall($name);
+    }
+
+    /* **********************************************  */
+    /* "With" methods for more readable initialization */
+    /* **********************************************  */
+    public function WithName($name)
+    {
+        $this->name = $name;
+        return $this;
+    }
+
+    public function WithDescription($description)
+    {
+        $this->description = $description;
+        return $this;
+    }
+
+    public function WithProperties($properties)
+    {
+        $this->properties = $properties;
+        return $this;
+    }
+
+    public function WithAttributes($attributes)
+    {
+        $this->property_descriptions = $attributes['descriptions'] ?? [];
+        $this->property_required = $attributes['required'] ?? [];
+        return $this;
+    }
+
+    public function WithCallback($callback)
+    {
+        $this->callback = $callback;
+        return $this;
+    }
 }
