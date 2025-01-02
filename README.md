@@ -357,6 +357,7 @@ Supported models by vendors.
 - openai-gpt-4
 - openai-gpt-4-turbo
 - openai-gpt-4-turbo-preview
+- openai-gpt-3.5-turbo
 - openai-text-embedding-3-large
 - openai-text-embedding-3-small
 - openai-text-embedding-ada-002

@@ -21,7 +21,8 @@ class OpenAI_Completions extends ModelBase implements IModel
         'openai-o1-mini',
         'openai-gpt-4',
         'openai-gpt-4-turbo',
-        'openai-gpt-4-turbo-preview'
+        'openai-gpt-4-turbo-preview',
+        'openai-gpt-3.5-turbo'
     ];
     
 
