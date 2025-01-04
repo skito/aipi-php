@@ -394,4 +394,5 @@ Learn more here: [Add Models](docs/add_models.md)
 <br>
 
 ## Requests and support
-For any feedback, requests, questions or issues, please open an issue on GitHub.
+For any feedback, requests, questions or issues, please open an issue on GitHub.<br>
+For DMs [dimita7atanasov](https://x.com/dimita7atanasov)
