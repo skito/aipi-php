@@ -14,6 +14,7 @@ class OpenAI_Images extends ModelBase implements IModel
     private $_lastError = '';
     
     private static $_supported = [
+        'openai-gpt-image-1',
         'openai-dall-e-3',
         'openai-dall-e-2'
     ];

@@ -14,21 +14,31 @@ class OpenAI_Completions extends ModelBase implements IModel
     private $_lastError = '';
     
     private static $_supported = [
-        'openai-gpt-4o',
-        'openai-chatgpt-4o-latest',
-        'openai-gpt-4o-mini',
-        'openai-o1-preview',
-        'openai-o1-mini',
         'openai-gpt-4',
         'openai-gpt-4-turbo',
         'openai-gpt-4-turbo-preview',
-        'openai-gpt-3.5-turbo'
+        'openai-gpt-4.1',
+        'openai-gpt-4o',
+        'openai-chatgpt-4o-latest',
+        'openai-gpt-4o-mini',
+        'openai-gpt-4.1-mini',
+        'openai-gpt-4.1-nano',
+        'openai-gpt-4.1-nano',
+        'openai-o1',
+        'openai-o1-pro',
+        'openai-o1-mini',
+        'openai-o1-preview',
+        'openai-o3',
+        'openai-o3-mini',
+        'openai-o4-mini',
+        'openai-gpt-4o-mini-search-preview',
+        'openai-gpt-4o-search-preview'
     ];
     
 
-    public function __construct($name = 'openai-gpt-4o')
+    public function __construct($name = 'openai-gpt-4.1')
     {
-        $this->_name = in_array($name, self::$_supported) ? $name : 'openai-gpt-4o';
+        $this->_name = in_array($name, self::$_supported) ? $name : 'openai-gpt-4.1';
     }
 
     public function GetName()
@@ -151,7 +161,7 @@ class OpenAI_Completions extends ModelBase implements IModel
             'Authorization: Bearer ' . $apikey,
             'Content-Type: application/json'
         ]);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
 
         // Execute the request
         $response = curl_exec($ch);
@@ -198,7 +208,7 @@ class OpenAI_Completions extends ModelBase implements IModel
                         'args' => json_decode($message->function_call->arguments)
                     ]
                 ]
-            ]);
+            ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         }
 
         return new Message($content, $role);

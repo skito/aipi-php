@@ -15,13 +15,19 @@ class xAI_Completions extends ModelBase implements IModel
     
     private static $_supported = [
         'xai-grok-beta',
-        'xai-grok-vision-beta'
+        'xai-grok-vision-beta',
+        'xai-grok-2-latest',
+        'xai-grok-2-vision-latest',
+        'xai-grok-3-mini-fast-latest',
+        'xai-grok-3-mini-latest',
+        'xai-grok-3-fast-latest',
+        'xai-grok-3-latest'
     ];
     
 
-    public function __construct($name = 'xai-grok-vision-beta')
+    public function __construct($name = 'xai-grok-3-latest')
     {
-        $this->_name = in_array($name, self::$_supported) ? $name : 'xai-grok-vision-beta';
+        $this->_name = in_array($name, self::$_supported) ? $name : 'xai-grok-3-latest';
     }
 
     public function GetName()
@@ -153,7 +159,7 @@ class xAI_Completions extends ModelBase implements IModel
             'Authorization: Bearer ' . $apikey,
             'Content-Type: application/json'
         ]);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
 
         // Execute the request
         $response = curl_exec($ch);
@@ -204,7 +210,7 @@ class xAI_Completions extends ModelBase implements IModel
                 }
             }
             
-            $content = json_encode(['calls' => $calls]);
+            $content = json_encode(['calls' => $calls], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         }
 
         return new Message($content, $role);

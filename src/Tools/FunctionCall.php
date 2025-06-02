@@ -39,7 +39,7 @@ class FunctionCall implements \AIpi\ITool
         return null;
     }
 
-    public function Init($name='')
+    public static function Init($name='')
     {
         return new FunctionCall($name);
     }

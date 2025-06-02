@@ -16,7 +16,19 @@ class Google_Completions extends ModelBase implements IModel
     private static $_supported = [
         'google-gemini-1.5-flash',
         'google-gemini-1.5-flash-8b',
-        'google-gemini-1.5-pro'
+        'google-gemini-1.5-pro',
+        'google-gemini-2.0-flash',
+        'google-veo-2.0-generate-001',
+        'google-imagen-3.0-generate-002',
+        'google-gemini-2.0-flash-lite',
+        'google-gemini-2.0-flash-preview-image-generation',
+        'google-gemini-2.0-flash',
+        'google-gemini-2.5-pro-preview-tts',
+        'google-gemini-2.5-pro-preview-05-06',
+        'google-gemini-2.5-flash-preview-tts',
+        'google-gemini-2.5-flash-preview-native-audio-dialog',
+        'google-gemini-2.5-flash-exp-native-audio-thinking-dialog',
+        'google-gemini-2.5-flash-preview-05-20'
     ];
     
 
@@ -43,21 +55,90 @@ class Google_Completions extends ModelBase implements IModel
 
         // Prepare the request data
         $modelName = explode('google-', $this->_name)[1];
+        
+        // Extract system message if present
+        $systemInstruction = '';
+        $filteredMessages = [];
+        foreach ($messages as $msg) {
+            if ($msg->role === MessageRole::SYSTEM) {
+                $systemInstruction = $msg->content;
+            } else {
+                $filteredMessages[] = $msg;
+            }
+        }
+
         $data = [
             'model' => $modelName,
             'contents' => array_map(function($msg) {
                 $role = 'user';
-                if ($msg->role === MessageRole::SYSTEM)
-                    $role = 'system';
-                elseif ($msg->role === MessageRole::ASSISTANT)
+                if ($msg->role === MessageRole::ASSISTANT)
                     $role = 'model';
-                elseif (in_array($msg->role, [MessageRole::TOOL, MessageRole::RESULT]))
+                elseif ($msg->role === MessageRole::TOOL)
+                    $role = 'model';
+                elseif ($msg->role === MessageRole::RESULT)
                     $role = 'model';
 
                 $parts = [];
 
+                // Handle tool responses
+                if ($msg->role === MessageRole::RESULT) {
+                    $responseData = json_decode($msg->content, true);
+                    if (isset($responseData['tool_result'])) {
+                        // Single tool result
+                        $parts[] = [
+                            'functionResponse' => [
+                                'name' => $responseData['tool_result']['tool_name'],
+                                'response' => ['result' => $responseData['tool_result']['result']]
+                            ]
+                        ];
+                    } elseif (isset($responseData['tool_results']) && is_array($responseData['tool_results'])) {
+                        // Multiple tool results - consolidate into a single response
+                        // Google API expects 1:1 mapping between function calls and responses
+                        if (!empty($responseData['tool_results'])) {
+                            $firstResult = $responseData['tool_results'][0];
+                            if (isset($firstResult['tool_result'])) {
+                                // Use the first result's tool name and consolidate all results
+                                $consolidatedResults = [];
+                                foreach ($responseData['tool_results'] as $toolResult) {
+                                    if (isset($toolResult['tool_result'])) {
+                                        $consolidatedResults[] = $toolResult['tool_result']['result'];
+                                    }
+                                }
+                                
+                                $parts[] = [
+                                    'functionResponse' => [
+                                        'name' => $firstResult['tool_result']['tool_name'],
+                                        'response' => ['result' => $consolidatedResults]
+                                    ]
+                                ];
+                            }
+                        }
+                    }
+                }
+                // Handle function calls
+                elseif ($msg->role === MessageRole::TOOL) {
+                    $calls = json_decode($msg->content, true);
+                    if (isset($calls['calls']) && is_array($calls['calls'])) {
+                        foreach ($calls['calls'] as $call) {
+                            // Ensure args is always an object, not an array
+                            $args = $call['args'] ?? [];
+                            if (is_array($args) && empty($args)) {
+                                $args = new \stdClass();
+                            } elseif (is_array($args)) {
+                                $args = (object)$args;
+                            }
+                            
+                            $parts[] = [
+                                'functionCall' => [
+                                    'name' => $call['name'],
+                                    'args' => $args
+                                ]
+                            ];
+                        }
+                    }
+                }
                 // Handle different message types
-                if ($msg->attributes['type'] === MessageType::FILE && 
+                elseif ($msg->attributes['type'] === MessageType::FILE && 
                     in_array($msg->role, [MessageRole::USER, MessageRole::SYSTEM])) {
                     $mediaType = $msg->attributes['media_type'] ?? 'image/jpeg';
                     $parts[] = [
@@ -80,8 +161,15 @@ class Google_Completions extends ModelBase implements IModel
                     'role' => $role,
                     'parts' => $parts
                 ];
-            }, $messages)
+            }, $filteredMessages)
         ];
+
+        // Add system instruction if present
+        if (!empty($systemInstruction)) {
+            $data['systemInstruction'] = [
+                'parts' => ['text' => $systemInstruction]
+            ];
+        }
 
         // Add additional data if provided
         $additionalData = [];
@@ -167,7 +255,7 @@ class Google_Completions extends ModelBase implements IModel
             'x-goog-api-key: ' . $apikey,
             'Content-Type: application/json'
         ]);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
 
         // Execute the request
         $response = curl_exec($ch);
@@ -202,18 +290,38 @@ class Google_Completions extends ModelBase implements IModel
         $content = $result->candidates[0]->content;
         $role = MessageRole::ASSISTANT;
 
-        // Handle function calls
-        if (isset($content->parts[0]->functionCall)) {
+        // Handle function calls and responses
+        $functionCalls = [];
+        $functionResponses = [];
+        
+        foreach ($content->parts as $part) {
+            if (isset($part->functionCall)) {
+                $functionCalls[] = [
+                    'name' => $part->functionCall->name,
+                    'args' => $part->functionCall->args ?? new \stdClass()
+                ];
+            }
+            if (isset($part->functionResponse)) {
+                $functionResponses[] = [
+                    'name' => $part->functionResponse->name,
+                    'response' => $part->functionResponse->response
+                ];
+            }
+        }
+
+        if (!empty($functionCalls)) {
             $role = MessageRole::TOOL;
-            $functionCall = $content->parts[0]->functionCall;
             $content = json_encode([
-                'calls' => [
-                    [
-                        'name' => $functionCall->name,
-                        'args' => $functionCall->args
-                    ]
+                'calls' => $functionCalls
+            ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        } elseif (!empty($functionResponses)) {
+            $role = MessageRole::RESULT;
+            $content = json_encode([
+                'tool_result' => [
+                    'tool_name' => $functionResponses[0]['name'],
+                    'result' => $functionResponses[0]['response']['result'] ?? $functionResponses[0]['response']
                 ]
-            ]);
+            ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         } else {
             // Regular text response
             $content = $content->parts[0]->text ?? '';

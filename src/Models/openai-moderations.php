@@ -79,7 +79,7 @@ class OpenAI_Moderations extends ModelBase implements IModel
             'Authorization: Bearer ' . $apikey,
             'Content-Type: application/json'
         ]);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
 
         // Execute the request
         $response = curl_exec($ch);
@@ -107,7 +107,7 @@ class OpenAI_Moderations extends ModelBase implements IModel
 
         // Return moderation result as a message
         return new Message(
-            json_encode($result->results[0]),
+            json_encode($result->results[0], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
             ['role' => MessageRole::ASSISTANT, 'type' => MessageType::TEXT]
         );
     }

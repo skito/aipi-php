@@ -78,7 +78,7 @@ class Google_Embeddings extends ModelBase implements IModel
             'x-goog-api-key: ' . $apikey,
             'Content-Type: application/json'
         ]);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
 
         // Execute the request
         $response = curl_exec($ch);

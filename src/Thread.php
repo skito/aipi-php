@@ -117,6 +117,8 @@ class Thread
         if ($message->role == MessageRole::TOOL)
         {
             $calls = @json_decode($message->content) ?? (object)['calls' => []];
+            $toolResults = [];
+            
             foreach ($calls->calls as $call)
             {
                 $toolcall = ToolCall::ParseArray($call);
@@ -129,18 +131,33 @@ class Thread
                             $result = $tool->RunCallback($toolcall->args);
                             if ($result !== null)
                             {
-                                $message = new Message('', MessageRole::RESULT);
-                                $message->content = json_encode([
+                                $toolResults[] = [
                                     'tool_result' => [
                                         'tool_name' => $tool->GetName(),
                                         'tool_type' => $tool->GetType(),
                                         'result' => $result
                                     ]
-                                ]);
-                                $this->messages[] = $message;
+                                ];
                             }
                         }
                     }
+                }
+            }
+            
+            // Create a single message with all tool results
+            if (!empty($toolResults)) {
+                if (count($toolResults) == 1) {
+                    // Single tool result - use existing format
+                    $resultMessage = new Message('', MessageRole::RESULT);
+                    $resultMessage->content = json_encode($toolResults[0], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+                    $this->messages[] = $resultMessage;
+                } else {
+                    // Multiple tool results - group them together
+                    $resultMessage = new Message('', MessageRole::RESULT);
+                    $resultMessage->content = json_encode([
+                        'tool_results' => $toolResults
+                    ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+                    $this->messages[] = $resultMessage;
                 }
             }
             

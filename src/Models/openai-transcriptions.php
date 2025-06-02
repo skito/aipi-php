@@ -14,7 +14,9 @@ class OpenAI_Transcriptions extends ModelBase implements IModel
     private $_lastError = '';
     
     private static $_supported = [
-        'openai-whisper-1'
+        'openai-whisper-1',
+        'openai-gpt-4o-transcribe',
+        'openai-gpt-4o-mini-transcribe'
     ];
     
 

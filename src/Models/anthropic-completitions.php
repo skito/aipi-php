@@ -14,15 +14,18 @@ class Anthropic_Completions extends ModelBase implements IModel
     private $_lastError = '';
     
     private static $_supported = [
-        'anthropic-claude-3-5-sonnet-latest',
+        'anthropic-claude-3-opus-latest',
         'anthropic-claude-3-5-haiku-latest',
-        'anthropic-claude-3-opus-latest'
+        'anthropic-claude-3-5-sonnet-latest',        
+        'anthropic-claude-3-7-sonnet-latest',
+        'anthropic-claude-opus-4-0',
+        'anthropic-claude-sonnet-4-0'
     ];
     
 
-    public function __construct($name = 'anthropic-claude-3-5-sonnet-latest')
+    public function __construct($name = 'anthropic-claude-sonnet-4-0')
     {
-        $this->_name = in_array($name, self::$_supported) ? $name : 'anthropic-claude-3-5-sonnet-latest';
+        $this->_name = in_array($name, self::$_supported) ? $name : 'anthropic-claude-sonnet-4-0';
     }
 
     public function GetName()
@@ -156,7 +159,7 @@ class Anthropic_Completions extends ModelBase implements IModel
             'anthropic-version: 2023-06-01',
             'Content-Type: application/json'
         ]);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
 
         // Execute the request
         $response = curl_exec($ch);
@@ -199,7 +202,7 @@ class Anthropic_Completions extends ModelBase implements IModel
                                 'args' => $content->input
                             ]
                         ]
-                    ]), MessageRole::TOOL);
+                    ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), MessageRole::TOOL);
                 }
             }
             

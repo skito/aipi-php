@@ -14,6 +14,7 @@ class OpenAI_Speech extends ModelBase implements IModel
     private $_lastError = '';
     
     private static $_supported = [
+        'openai-gpt-4o-mini-tts',
         'openai-tts-1',
         'openai-tts-1-hd'
     ];
@@ -107,7 +108,7 @@ class OpenAI_Speech extends ModelBase implements IModel
             'Authorization: Bearer ' . $apikey,
             'Content-Type: application/json'
         ]);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
 
         // Execute the request
         $response = curl_exec($ch);
