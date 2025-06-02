@@ -349,47 +349,84 @@ $message = new AIpi\Message('Hello!', ['role' => AIpi\MessageRole::USER, 'type' 
 Supported models by vendors.
 
 **OpenAI** [(examples)](docs/openai.md)
-- openai-gpt-4o
-- openai-gpt-4o-mini
-- openai-chatgpt-4o-latest
-- openai-o1-preview
-- openai-o1-mini
 - openai-gpt-4
 - openai-gpt-4-turbo
 - openai-gpt-4-turbo-preview
-- openai-gpt-3.5-turbo
+- openai-gpt-4.1
+- openai-gpt-4o
+- openai-chatgpt-4o-latest
+- openai-gpt-4o-mini
+- openai-gpt-4.1-mini
+- openai-gpt-4.1-nano
+- openai-gpt-4.1-nano
+- openai-o1
+- openai-o1-pro
+- openai-o1-mini
+- openai-o1-preview
+- openai-o3
+- openai-o3-mini
+- openai-o4-mini
+- openai-gpt-4o-mini-search-preview
+- openai-gpt-4o-search-preview
 - openai-text-embedding-3-large
 - openai-text-embedding-3-small
 - openai-text-embedding-ada-002
 - openai-dall-e-3
 - openai-dall-e-2
+- openai-gpt-image-1
 - openai-tts-1
 - openai-tts-1-hd
+- openai-gpt-4o-mini-tts
 - openai-whisper-1
+- openai-gpt-4o-transcribe
+- openai-gpt-4o-mini-transcribe
 - openai-omni-moderation-latest
 - openai-text-moderation-latest
 - openai-text-moderation-stable
 
 **Anthropic** [(examples)](docs/anthropic.md)
-- anthropic-claude-3-5-sonnet-latest
-- anthropic-claude-3-5-haiku-latest
 - anthropic-claude-3-opus-latest
+- anthropic-claude-3-5-haiku-latest
+- anthropic-claude-3-5-sonnet-latest
+- anthropic-claude-3-7-sonnet-latest
+- anthropic-claude-opus-4-0
+- anthropic-claude-sonnet-4-0
 
 **Google DeepMind** [(examples)](docs/google.md)
 - google-gemini-1.5-flash
 - google-gemini-1.5-flash-8b
 - google-gemini-1.5-pro
 - google-text-embedding-004
+- google-gemini-2.0-flash
+- google-veo-2.0-generate-001
+- google-imagen-3.0-generate-002
+- google-gemini-2.0-flash-lite
+- google-gemini-2.0-flash-preview-image-generation
+- google-gemini-2.0-flash
+- google-gemini-2.5-pro-preview-tts
+- google-gemini-2.5-pro-preview-05-06
+- google-gemini-2.5-flash-preview-tts
+- google-gemini-2.5-flash-preview-native-audio-dialog
+- google-gemini-2.5-flash-exp-native-audio-thinking-dialog
+- google-gemini-2.5-flash-preview-05-20
 
 **xAI** [(examples)](docs/xai.md)
+- xai-embedding-beta
 - xai-grok-beta
 - xai-grok-vision-beta
-- xai-embedding-beta
+- xai-grok-2-latest
+- xai-grok-2-vision-latest
+- xai-grok-3-mini-fast-latest
+- xai-grok-3-mini-latest
+- xai-grok-3-fast-latest
+- xai-grok-3-latest
 <br>
 
 ### Add Models
 You can add your own models by creating a new class that extends `AIpi\ModelBase` and implementing the `Call` method.
 Learn more here: [Add Models](docs/add_models.md)
+
+**NOTE** Most models are using common vendor API. If there is new generation model not yet updated in this library you can manually add it to the list with supported models inside the `Models` folder.
 
 <br>
 
