@@ -125,6 +125,16 @@ $weatherInfo = new FunctionCall(
     }
 );
 
+// or alternatively
+// $weatherInfo = new FunctionCall('get_weather_info')
+//    ->WithDescription('Get weather info by city name and country code.')
+//    ->WithProperties(['city' => 'string', 'countryCode' => 'string'])
+//    ...
+//    ->WithCallback(function($args) {
+//        return ['weather' => 'sunny'];
+//    });
+    
+
 /** ********************************** */
 /** Create a new thread with the tool */
 /** ********************************** */
