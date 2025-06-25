@@ -359,6 +359,7 @@ $message = new AIpi\Message('Hello!', ['role' => AIpi\MessageRole::USER, 'type' 
 Supported models by vendors.
 
 **OpenAI** [(examples)](docs/openai.md)
+- openai-gpt-4.5-preview
 - openai-gpt-4
 - openai-gpt-4-turbo
 - openai-gpt-4-turbo-preview
@@ -367,7 +368,6 @@ Supported models by vendors.
 - openai-chatgpt-4o-latest
 - openai-gpt-4o-mini
 - openai-gpt-4.1-mini
-- openai-gpt-4.1-nano
 - openai-gpt-4.1-nano
 - openai-o1
 - openai-o1-pro
@@ -378,6 +378,7 @@ Supported models by vendors.
 - openai-o4-mini
 - openai-gpt-4o-mini-search-preview
 - openai-gpt-4o-search-preview
+- openai-gpt-3.5-turbo
 - openai-text-embedding-3-large
 - openai-text-embedding-3-small
 - openai-text-embedding-ada-002
@@ -395,41 +396,42 @@ Supported models by vendors.
 - openai-text-moderation-stable
 
 **Anthropic** [(examples)](docs/anthropic.md)
-- anthropic-claude-3-opus-latest
-- anthropic-claude-3-5-haiku-latest
-- anthropic-claude-3-5-sonnet-latest
-- anthropic-claude-3-7-sonnet-latest
-- anthropic-claude-opus-4-0
 - anthropic-claude-sonnet-4-0
+- anthropic-claude-opus-4-0
+- anthropic-claude-3-7-sonnet-latest
+- anthropic-claude-3-5-sonnet-latest
+- anthropic-claude-3-5-haiku-latest
+- anthropic-claude-3-opus-latest
 
 **Google DeepMind** [(examples)](docs/google.md)
-- google-gemini-1.5-flash
-- google-gemini-1.5-flash-8b
-- google-gemini-1.5-pro
-- google-text-embedding-004
-- google-gemini-2.0-flash
-- google-veo-2.0-generate-001
-- google-imagen-3.0-generate-002
-- google-gemini-2.0-flash-lite
-- google-gemini-2.0-flash-preview-image-generation
-- google-gemini-2.0-flash
-- google-gemini-2.5-pro-preview-tts
-- google-gemini-2.5-pro-preview-05-06
-- google-gemini-2.5-flash-preview-tts
-- google-gemini-2.5-flash-preview-native-audio-dialog
-- google-gemini-2.5-flash-exp-native-audio-thinking-dialog
+- google-gemini-2.5-pro
+- google-gemini-2.5-flash
 - google-gemini-2.5-flash-preview-05-20
+- google-gemini-2.5-flash-exp-native-audio-thinking-dialog
+- google-gemini-2.5-flash-preview-native-audio-dialog
+- google-gemini-2.5-flash-preview-tts
+- google-gemini-2.5-pro-preview-05-06
+- google-gemini-2.5-pro-preview-tts
+- google-gemini-2.0-flash
+- google-gemini-2.0-flash-preview-image-generation
+- google-gemini-2.0-flash-lite
+- google-imagen-3.0-generate-002 
+- google-veo-2.0-generate-001
+- google-text-embedding-004
+- google-gemini-1.5-pro
+- google-gemini-1.5-flash-8b 
+- google-gemini-1.5-flash
 
 **xAI** [(examples)](docs/xai.md)
-- xai-embedding-beta
-- xai-grok-beta
-- xai-grok-vision-beta
-- xai-grok-2-latest
-- xai-grok-2-vision-latest
-- xai-grok-3-mini-fast-latest
-- xai-grok-3-mini-latest
-- xai-grok-3-fast-latest
 - xai-grok-3-latest
+- xai-grok-3-fast-latest
+- xai-grok-3-mini-latest
+- xai-grok-3-mini-fast-latest
+- xai-grok-2-vision-latest
+- xai-grok-2-latest
+- xai-grok-vision-beta
+- xai-grok-beta
+- xai-embedding-beta
 <br>
 
 ### Add Models
