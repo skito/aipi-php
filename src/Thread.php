@@ -6,19 +6,22 @@ class Thread
 {
     public $messages = [];
     public $tools = [];
+    public $toolsEnabled = true; // handy for temporary disabling tools
     public $options = null; // object of key-value pairs (option name => option value)
+    public $meta = []; // storing any additional helper data for your convenience - not used anywhere the communication
 
     private $_model = null;
     private $_apikey = null;
-    private $_inputTokens = 0;
-    private $_outputTokens = 0;
+    private $_inputTokens = 0; // Total input tokens on message processing
+    private $_outputTokens = 0; // Total output tokens on message processing
     private $_files = 0;
+    private $_executionTime = 0; // Total execution time on message processing
+    private $_messageCallbacks = [];
 
     public function __construct($model, $apikey, $opts=[])
     {
         $this->_apikey = $apikey;  
         $this->options = (object)array_merge([
-            'temperature' => 0.5,
             'throwOnError' => true
         ], (array)$opts);
 
@@ -57,14 +60,37 @@ class Thread
         return (object)[ 
             'inputTokens' => $this->_inputTokens,
             'outputTokens' => $this->_outputTokens,
-            'files' => $this->_files
+            'files' => $this->_files,
+            'executionTime' => $this->_executionTime
         ];
     }    
 
-    public function AddMessage($message)
+    public function AddMessage($message, $options=[])
     {
+        $options = (object)array_merge([
+            'runCallbacks' => true,
+            'model' => $this->GetModel(),
+            'usage' => (object)[
+                'inputTokens' => 0,
+                'outputTokens' => 0,
+                'files' => 0,
+                'executionTime' => 0
+            ]
+        ], $options);
+
         if ($message instanceof Message)
+        {
             $this->messages[] = $message;
+            if ($options->runCallbacks)
+            {
+                $this->_RunCallbacks($this->_messageCallbacks, (object)[
+                    'thread' => $this, 
+                    'message' => $message, 
+                    'usage' => $options->usage,
+                    'model' => $options->model
+                ]);   
+            }
+        }
     }
 
     public function AddTool($tool)
@@ -80,6 +106,44 @@ class Thread
         else return null;
     }
 
+    public function GetLastToolResult($toolName)
+    {
+        foreach ($this->tools as $tool)
+        {
+            if ($tool->GetName() == $toolName)
+                return $tool->GetLastResult();
+        }
+        return null;
+    }
+
+    public function DisableTools()
+    {
+        $this->toolsEnabled = false;
+    }
+
+    public function EnableTools()
+    {
+        $this->toolsEnabled = true;
+    }
+
+    // Alias for AddMessageCallback
+    public function OnMessage($callback)
+    {
+        $this->AddMessageCallback($callback);
+    }
+
+    public function AddMessageCallback($callback)
+    {
+        $key = $this->_GetCallbackKey($callback);
+        $this->_messageCallbacks[$key] = $callback;
+    }
+
+    public function RemoveMessageCallback($callback)
+    {
+        $key = $this->_GetCallbackKey($callback);
+        unset($this->_messageCallbacks[$key]);
+    }
+
     public function RunOnce()
     {
         return $this->Run(false);
@@ -92,13 +156,15 @@ class Thread
             throw new \Exception('Model not assigned.');
 
         $tokens = null;
+        $exTimeBegin = microtime(true);
         $message = $model->Call(
             $this->_apikey, 
             $this->messages, 
-            $this->tools, 
+            $this->toolsEnabled ? $this->tools : [], 
             $this->options, 
             $tokens
         );
+        $executionTime = microtime(true) - $exTimeBegin;
 
         if (!$message)
         {
@@ -107,12 +173,20 @@ class Thread
             return null;
         }
 
-        $this->messages[] = $message;
-
         $tokens = (object)$tokens;
         $this->_inputTokens += $tokens->input ?? 0;
         $this->_outputTokens += $tokens->output ?? 0;
         $this->_files += $tokens->files ?? 0;
+        $this->_executionTime += $executionTime;
+
+        $this->AddMessage($message, [
+            'usage' => (object)[
+                'inputTokens' => $tokens->input ?? 0,
+                'outputTokens' => $tokens->output ?? 0,
+                'files' => $tokens->files ?? 0,
+                'executionTime' => $executionTime
+            ]
+        ]);
 
         if ($message->role == MessageRole::TOOL)
         {
@@ -128,14 +202,18 @@ class Thread
                     {
                         if ($tool->GetName() == $toolcall->toolname)
                         {
+                            $toolExecutionStart = microtime(true);
                             $result = $tool->RunCallback($toolcall->args);
+                            $toolExecutionEnd = microtime(true);
+
                             if ($result !== null)
                             {
                                 $toolResults[] = [
                                     'tool_result' => [
                                         'tool_name' => $tool->GetName(),
                                         'tool_type' => $tool->GetType(),
-                                        'result' => $result
+                                        'result' => $result,
+                                        'exe_time' => $toolExecutionEnd - $toolExecutionStart
                                     ]
                                 ];
                             }
@@ -146,19 +224,33 @@ class Thread
             
             // Create a single message with all tool results
             if (!empty($toolResults)) {
+                $resultMessage = '';
+                $exeTime = 0;
                 if (count($toolResults) == 1) {
                     // Single tool result - use existing format
                     $resultMessage = new Message('', MessageRole::RESULT);
                     $resultMessage->content = json_encode($toolResults[0], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-                    $this->messages[] = $resultMessage;
+                    $exeTime = $toolResults[0]['tool_result']['exe_time'];
                 } else {
                     // Multiple tool results - group them together
                     $resultMessage = new Message('', MessageRole::RESULT);
                     $resultMessage->content = json_encode([
                         'tool_results' => $toolResults
                     ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-                    $this->messages[] = $resultMessage;
+
+                    foreach ($toolResults as $toolResult) {
+                        $exeTime += $toolResult['tool_result']['exe_time'];
+                    }
                 }
+
+                $this->AddMessage($resultMessage, [
+                    'usage' => (object)[
+                        'inputTokens' => 0,
+                        'outputTokens' => 0,
+                        'files' => 0,
+                        'executionTime' => $exeTime
+                    ]
+                ]);
             }
             
             if ($autocomplete && $this->GetLastMessage()->role == MessageRole::RESULT)
@@ -167,6 +259,29 @@ class Thread
         }
         
         return $message;
+    }
+
+    private function _GetCallbackKey($callback)
+    {
+        if (is_array($callback)) {
+            // For object methods or class static methods
+            return md5(json_encode($callback));
+        } elseif ($callback instanceof \Closure) {
+            // For closures
+            return spl_object_hash($callback);
+        } elseif (is_string($callback)) {
+            // For function names
+            return $callback;
+        } else {
+            // Fallback for other types
+            return md5(serialize($callback));
+        }
+    }
+
+    private function _RunCallbacks($callbacks, $args)
+    {
+        foreach ($callbacks as $callback)
+            call_user_func($callback, $args);
     }
 
 }

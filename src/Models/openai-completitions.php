@@ -14,6 +14,7 @@ class OpenAI_Completions extends ModelBase implements IModel
     private $_lastError = '';
     
     private static $_supported = [
+        'openai-gpt-4.5-preview',
         'openai-gpt-4',
         'openai-gpt-4-turbo',
         'openai-gpt-4-turbo-preview',
@@ -32,7 +33,8 @@ class OpenAI_Completions extends ModelBase implements IModel
         'openai-o3-mini',
         'openai-o4-mini',
         'openai-gpt-4o-mini-search-preview',
-        'openai-gpt-4o-search-preview'
+        'openai-gpt-4o-search-preview',
+        'openai-gpt-3.5-turbo'
     ];
     
 
@@ -140,7 +142,7 @@ class OpenAI_Completions extends ModelBase implements IModel
                         'description' => $tool->description,
                         'parameters' => [
                             'type' => 'object',
-                            'properties' => array_map(function($type) {
+                            'properties' => (object)array_map(function($type) {
                                 return ['type' => $type];
                             }, $tool->properties),
                             'required' => $tool->property_required
@@ -161,7 +163,7 @@ class OpenAI_Completions extends ModelBase implements IModel
             'Authorization: Bearer ' . $apikey,
             'Content-Type: application/json'
         ]);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data, JSON_UNESCAPED_UNICODE));
 
         // Execute the request
         $response = curl_exec($ch);
@@ -208,7 +210,7 @@ class OpenAI_Completions extends ModelBase implements IModel
                         'args' => json_decode($message->function_call->arguments)
                     ]
                 ]
-            ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+            ], JSON_UNESCAPED_UNICODE);
         }
 
         return new Message($content, $role);

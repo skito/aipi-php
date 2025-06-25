@@ -139,7 +139,7 @@ class Anthropic_Completions extends ModelBase implements IModel
                         'description' => $tool->description,
                         'input_schema' => [
                             "type" => "object",
-                            'properties' => $properties,
+                            'properties' => (object)$properties,
                             'required' => $tool->property_required
                         ]
                     ];
@@ -159,7 +159,7 @@ class Anthropic_Completions extends ModelBase implements IModel
             'anthropic-version: 2023-06-01',
             'Content-Type: application/json'
         ]);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data, JSON_UNESCAPED_UNICODE));
 
         // Execute the request
         $response = curl_exec($ch);
@@ -202,7 +202,7 @@ class Anthropic_Completions extends ModelBase implements IModel
                                 'args' => $content->input
                             ]
                         ]
-                    ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), MessageRole::TOOL);
+                    ], JSON_UNESCAPED_UNICODE), MessageRole::TOOL);
                 }
             }
             

@@ -9,4 +9,5 @@ abstract class MessageRole
     const SYSTEM = "system";
     const TOOL = "tool";
     const RESULT = "result";
+    const HUMAN = "human";
 }

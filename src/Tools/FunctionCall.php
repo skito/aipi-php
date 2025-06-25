@@ -10,6 +10,8 @@ class FunctionCall implements \AIpi\ITool
     public $property_descriptions = []; // array of key-value pairs (property_name => description)
     public $property_required = []; // array of property names (strings)
     public $callback = null; // callback function (callable)
+    
+    private $_lastResult = null; // last result of the tool
 
     public function __construct($name='', $description='', $properties=[], $attributes=[], $callback=null)
     {
@@ -31,12 +33,18 @@ class FunctionCall implements \AIpi\ITool
         return $this->name;
     }   
 
+    public function GetLastResult()
+    {
+        return $this->_lastResult;
+    }
+
     public function RunCallback($args)
     {
         if ($this->callback !== null)
-            return call_user_func($this->callback, $args);
+            $this->_lastResult = call_user_func($this->callback, $args);
+        else $this->_lastResult = null;
         
-        return null;
+        return $this->_lastResult;
     }
 
     public static function Init($name='')
