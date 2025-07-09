@@ -198,59 +198,75 @@ class Thread
                 $toolcall = ToolCall::ParseArray($call);
                 if ($toolcall)
                 {
+                    $toolMatched = false;
                     foreach ($this->tools as $tool)
                     {
                         if ($tool->GetName() == $toolcall->toolname)
                         {
+                            $toolMatched = true;
                             $toolExecutionStart = microtime(true);
                             $result = $tool->RunCallback($toolcall->args);
                             $toolExecutionEnd = microtime(true);
-
-                            if ($result !== null)
-                            {
-                                $toolResults[] = [
-                                    'tool_result' => [
-                                        'tool_name' => $tool->GetName(),
-                                        'tool_type' => $tool->GetType(),
-                                        'result' => $result,
-                                        'exe_time' => $toolExecutionEnd - $toolExecutionStart
-                                    ]
-                                ];
-                            }
+                            $toolResults[] = [
+                                'tool_result' => [
+                                    'tool_name' => $tool->GetName(),
+                                    'tool_type' => $tool->GetType(),
+                                    'result' => $result,
+                                    'exe_time' => $toolExecutionEnd - $toolExecutionStart
+                                ]
+                            ];
+                            break;
                         }
+                    }
+
+                    if (!$toolMatched)
+                    {
+                        $toolResults[] = [
+                            'tool_result' => [
+                                'tool_name' => $toolcall->toolname,
+                                'tool_type' => 'undefined',
+                                'result' => null,
+                                'error' => 'Tool not available.',
+                                'exe_time' => 0
+                            ]
+                        ];
                     }
                 }
             }
             
             // Create a single message with all tool results
             if (!empty($toolResults)) {
-                $resultMessage = '';
-                $exeTime = 0;
                 if (count($toolResults) == 1) {
                     // Single tool result - use existing format
                     $resultMessage = new Message('', MessageRole::RESULT);
                     $resultMessage->content = json_encode($toolResults[0], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
                     $exeTime = $toolResults[0]['tool_result']['exe_time'];
+                    
+                    $this->AddMessage($resultMessage, [
+                        'usage' => (object)[
+                            'inputTokens' => 0,
+                            'outputTokens' => 0,
+                            'files' => 0,
+                            'executionTime' => $exeTime
+                        ]
+                    ]);
                 } else {
-                    // Multiple tool results - group them together
-                    $resultMessage = new Message('', MessageRole::RESULT);
-                    $resultMessage->content = json_encode([
-                        'tool_results' => $toolResults
-                    ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-
+                    // Multiple tool results - create separate messages for each for Google API compatibility
                     foreach ($toolResults as $toolResult) {
-                        $exeTime += $toolResult['tool_result']['exe_time'];
+                        $resultMessage = new Message('', MessageRole::RESULT);
+                        $resultMessage->content = json_encode($toolResult, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+                        $exeTime = $toolResult['tool_result']['exe_time'];
+                        
+                        $this->AddMessage($resultMessage, [
+                            'usage' => (object)[
+                                'inputTokens' => 0,
+                                'outputTokens' => 0,
+                                'files' => 0,
+                                'executionTime' => $exeTime
+                            ]
+                        ]);
                     }
                 }
-
-                $this->AddMessage($resultMessage, [
-                    'usage' => (object)[
-                        'inputTokens' => 0,
-                        'outputTokens' => 0,
-                        'files' => 0,
-                        'executionTime' => $exeTime
-                    ]
-                ]);
             }
             
             if ($autocomplete && $this->GetLastMessage()->role == MessageRole::RESULT)

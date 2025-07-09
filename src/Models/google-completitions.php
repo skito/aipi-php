@@ -150,27 +150,6 @@ class Google_Completions extends ModelBase implements IModel
                                 'response' => ['result' => $responseData['tool_result']['result']]
                             ]
                         ];
-                    } elseif (isset($responseData['tool_results']) && is_array($responseData['tool_results'])) {
-                        // Multiple tool results - consolidate into a single response
-                        if (!empty($responseData['tool_results'])) {
-                            $firstResult = $responseData['tool_results'][0];
-                            if (isset($firstResult['tool_result'])) {
-                                // Use the first result's tool name and consolidate all results
-                                $consolidatedResults = [];
-                                foreach ($responseData['tool_results'] as $toolResult) {
-                                    if (isset($toolResult['tool_result'])) {
-                                        $consolidatedResults[] = $toolResult['tool_result']['result'];
-                                    }
-                                }
-                                
-                                $parts[] = [
-                                    'functionResponse' => [
-                                        'name' => $firstResult['tool_result']['tool_name'],
-                                        'response' => ['result' => $consolidatedResults]
-                                    ]
-                                ];
-                            }
-                        }
                     }
                 } elseif ($msg->role === MessageRole::TOOL) {
                     // Handle function calls only
@@ -368,12 +347,6 @@ class Google_Completions extends ModelBase implements IModel
         if (isset($candidate->finishReason)) {
             $finishReason = $candidate->finishReason;
             if (in_array($finishReason, ['SAFETY', 'RECITATION', 'MALFORMED_FUNCTION_CALL', 'OTHER'])) {
-            echo '----SENDING-----'."\r\n\r\n";
-            print_r($data);
-            echo '----RECEIVED-----'."\r\n\r\n";
-            print_r($result);
-            echo '----FINISH REASON-----'."\r\n\r\n";
-            print_r($finishReason);
                 $this->_lastError = 'Google API response blocked or malformed. Reason: ' . $finishReason;
                 if ($options->throwOnError ?? true) {
                     throw new \Exception($this->_lastError);
