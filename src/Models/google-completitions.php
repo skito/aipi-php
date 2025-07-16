@@ -164,6 +164,11 @@ class Google_Completions extends ModelBase implements IModel
                                 $args = [];
                             }
                             
+                            // The `args` field must be a JSON object for the Google API.
+                            // A PHP empty array `[]` becomes a JSON array `[]` when encoded, which is wrong for `args`.
+                            // Casting to an object ensures it becomes `{}` for an empty array.
+                            $args = (object)$args;
+                            
                             $parts[] = [
                                 'functionCall' => [
                                     'name' => $call['name'],
