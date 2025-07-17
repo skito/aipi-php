@@ -14,7 +14,8 @@ class Anthropic_Completions extends ModelBase implements IModel
     private $_lastError = '';
     
     private static $_supported = [
-        'anthropic-claude-3-opus-latest',
+        'anthropic-claude-3-haiku-20240307',
+        'anthropic-claude-3-opus-20240229',
         'anthropic-claude-3-5-haiku-latest',
         'anthropic-claude-3-5-sonnet-latest',        
         'anthropic-claude-3-7-sonnet-latest',
