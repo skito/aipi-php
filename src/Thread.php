@@ -17,6 +17,8 @@ class Thread
     private $_files = 0;
     private $_executionTime = 0; // Total execution time on message processing
     private $_messageCallbacks = [];
+    private $_modelChangeCallbacks = [];
+    private $_fallbackModels = [];
 
     public function __construct($model, $apikey, $opts=[])
     {
@@ -28,7 +30,7 @@ class Thread
         $this->ChangeModel($model, $apikey);
     }
 
-    public function ChangeModel($model, $apikey)
+    public function ChangeModel($model, $apikey, $opts=null)
     {
         $this->_apikey = $apikey;
 
@@ -40,9 +42,38 @@ class Thread
         if ($this->_model == null)
             throw new \Exception('Model not supported or name typo.');
 
+        if ($opts !== null) {
+            $this->options = (object)array_merge([
+                'throwOnError' => true
+            ], (array)$opts);
+        }
+
         $this->_inputTokens = 0;
         $this->_outputTokens = 0;
         $this->_files = 0;
+
+        $this->_RunCallbacks($this->_modelChangeCallbacks, (object)[
+            'thread' => $this, 
+            'model' => $this->_model
+        ]);
+    }
+
+    public function AddFallbackModel($model, $apikey, $opts=null)
+    {
+        $this->_fallbackModels[] = (object)[
+            'model' => $model,
+            'apikey' => $apikey,
+            'opts' => $opts
+        ];
+    }
+
+    public function RemoveFallbackModel($model, $apikey, $opts=null)
+    {
+        foreach ($this->_fallbackModels as $key => $fallbackModel)
+        {
+            if ($fallbackModel->model == $model)
+                unset($this->_fallbackModels[$key]);
+        }
     }
 
     public function GetModel()
@@ -144,6 +175,26 @@ class Thread
         unset($this->_messageCallbacks[$key]);
     }
 
+
+    // Alias for AddModelChangeCallback
+    public function OnModelChange($callback)
+    {
+        $this->AddModelChangeCallback($callback);
+    }
+
+    public function AddModelChangeCallback($callback)
+    {
+        $key = $this->_GetCallbackKey($callback);
+        $this->_modelChangeCallbacks[$key] = $callback;
+    }
+
+    public function RemoveModelChangeCallback($callback)
+    {
+        $key = $this->_GetCallbackKey($callback);
+        unset($this->_modelChangeCallbacks[$key]);
+    }
+
+
     public function RunOnce()
     {
         return $this->Run(false);
@@ -154,6 +205,9 @@ class Thread
         $model = $this->GetModel();
         if ($this->_model == null)
             throw new \Exception('Model not assigned.');
+    
+        $hasFallbackModels = count($this->_fallbackModels) > 0;
+        if ($hasFallbackModels) $this->options->throwOnError = false;
 
         $tokens = null;
         $exTimeBegin = microtime(true);
@@ -168,7 +222,17 @@ class Thread
 
         if (!$message)
         {
-            if ($this->options['throwOnError'])
+            if ($hasFallbackModels)
+            {
+                $nextFallbackModel = $this->_GetNextFallbackModel();
+                if ($nextFallbackModel)
+                {
+                    $this->ChangeModel($nextFallbackModel->model, $nextFallbackModel->apikey, $nextFallbackModel->opts);
+                    return $this->Run($autocomplete);
+                }
+            }
+
+            if ($this->options->throwOnError)
                 throw new \Exception('Model returned no message');
             return null;
         }
@@ -298,6 +362,25 @@ class Thread
     {
         foreach ($callbacks as $callback)
             call_user_func($callback, $args);
+    }
+
+    private function _GetNextFallbackModel()
+    {
+        $isUsingFallback = false;
+        $selectNextModel = false;
+        foreach ($this->_fallbackModels as $fallbackModel)
+        {
+            if ($selectNextModel)
+                return $fallbackModel;
+
+            if ($fallbackModel->model == $this->_model->GetName())
+            {
+                $selectNextModel = true;
+                $isUsingFallback = true;
+            }
+        }
+
+        return $isUsingFallback ? null : $this->_fallbackModels[0];
     }
 
 }

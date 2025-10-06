@@ -14,7 +14,11 @@ class OpenAI_Completions extends ModelBase implements IModel
     private $_lastError = '';
     
     private static $_supported = [
-        'openai-gpt-4.5-preview',
+        'openai-gpt-5',
+        'openai-gpt-5-mini',
+        'openai-gpt-5-nano',
+        'openai-gpt-5-chat-latest',
+        'openai-gpt-4.5-preview', // Depricated
         'openai-gpt-4',
         'openai-gpt-4-turbo',
         'openai-gpt-4-turbo-preview',
@@ -23,7 +27,6 @@ class OpenAI_Completions extends ModelBase implements IModel
         'openai-chatgpt-4o-latest',
         'openai-gpt-4o-mini',
         'openai-gpt-4.1-mini',
-        'openai-gpt-4.1-nano',
         'openai-gpt-4.1-nano',
         'openai-o1',
         'openai-o1-pro',

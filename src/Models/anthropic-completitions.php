@@ -20,7 +20,9 @@ class Anthropic_Completions extends ModelBase implements IModel
         'anthropic-claude-3-5-sonnet-latest',        
         'anthropic-claude-3-7-sonnet-latest',
         'anthropic-claude-opus-4-0',
-        'anthropic-claude-sonnet-4-0'
+        'anthropic-claude-sonnet-4-0',
+        'anthropic-claude-opus-4-1',
+        'anthropic-claude-sonnet-4-5'
     ];
     
 

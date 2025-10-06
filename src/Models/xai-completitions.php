@@ -22,7 +22,10 @@ class xAI_Completions extends ModelBase implements IModel
         'xai-grok-3-mini-latest',
         'xai-grok-3-fast-latest',
         'xai-grok-3-latest',
-        'xai-grok-4-0709'
+        'xai-grok-4-latest',
+        'xai-grok-4-fast-non-reasoning-latest',
+        'xai-grok-4-fast-reasoning-latest',
+        'xai-grok-code-fast'
     ];
     
 

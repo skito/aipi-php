@@ -8,6 +8,7 @@
 Simple lightweight PHP library for interacting with common AI models, that provides universal interface.
 
 🤖 Multimodel support. Unified API for all models.<br>
+🛰️ Fallback models — define multiple models and vendors to auto-switch on API failure.<br>
 🔧 Tools support & agentic - autoresolve tool calls with callbacks.<br>
 🚀 Extendable - easy to add your own models and tools.<br>
 ⚡ No dependencies, just native PHP. cURL required.<br>
@@ -353,13 +354,51 @@ $message = new AIpi\Message('Hello!', ['type' => AIpi\MessageType::TEXT]);
 $message = new AIpi\Message('Hello!', ['role' => AIpi\MessageRole::USER, 'type' => AIpi\MessageType::TEXT]);
 ```
 
+### Fallback models
+```php
+/******************************/
+/* Define as many as you want */
+/******************************/
+$thread->AddFallbackModel('openai-gpt-4.1', $key); // keep the same options as the primary model
+$thread->AddFallbackModel('anthropic-claude-sonnet-4-5', $key, ['temperature' => 0.1]); // change the temperature if  fallback occurs
+```
+
+### Events
+```php
+/************************************************/
+/* Callback when message is added to the thread */
+/************************************************/
+$thread->OnMessage(function($e) {            
+    $thread = $e->thread ?? null;
+    $message = $e->message ?? null;
+    $usage = $e->usage ?? null;
+    $model = $e->model ?? $thread->GetModel();
+
+    // Continue callback logic ...
+});
+
+
+/******************************************/
+/* Callback when model/vendor is switched */
+/******************************************/
+$thread->OnModelChange(function($e) {            
+    $thread = $e->thread ?? null;    
+    $model = $e->model ?? $thread->GetModel();
+
+    // Continue callback logic ...
+});
+```
 <br>
 
 ## Supported models
 Supported models by vendors.
 
 **OpenAI** [(examples)](docs/openai.md)
-- openai-gpt-4.5-preview
+- openai-gpt-5
+- openai-gpt-5-mini
+- openai-gpt-5-nano
+- openai-gpt-5-chat-latest
+- openai-gpt-4.5-preview (depricated)
 - openai-gpt-4
 - openai-gpt-4-turbo
 - openai-gpt-4-turbo-preview
@@ -396,6 +435,8 @@ Supported models by vendors.
 - openai-text-moderation-stable
 
 **Anthropic** [(examples)](docs/anthropic.md)
+- anthropic-claude-sonnet-4-5
+- anthropic-claude-opus-4-1
 - anthropic-claude-sonnet-4-0
 - anthropic-claude-opus-4-0
 - anthropic-claude-3-7-sonnet-latest
@@ -406,6 +447,8 @@ Supported models by vendors.
 **Google DeepMind** [(examples)](docs/google.md)
 - google-gemini-2.5-pro
 - google-gemini-2.5-flash
+- google-gemini-2.5-flash-lite
+- google-gemini-2.5-flash-lite-preview-06-17
 - google-gemini-2.5-flash-preview-05-20
 - google-gemini-2.5-flash-exp-native-audio-thinking-dialog
 - google-gemini-2.5-flash-preview-native-audio-dialog
@@ -423,6 +466,10 @@ Supported models by vendors.
 - google-gemini-1.5-flash
 
 **xAI** [(examples)](docs/xai.md)
+- xai-grok-code-fast
+- xai-grok-4-latest
+- xai-grok-4-fast-non-reasoning-latest
+- xai-grok-4-fast-reasoning-latest
 - xai-grok-3-latest
 - xai-grok-3-fast-latest
 - xai-grok-3-mini-latest

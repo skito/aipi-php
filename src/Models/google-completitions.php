@@ -31,7 +31,8 @@ class Google_Completions extends ModelBase implements IModel
         'google-gemini-2.5-flash-preview-05-20',
         'google-gemini-2.5-pro',
         'google-gemini-2.5-flash',
-        'google-gemini-2.5-flash-lite-preview-06-17'
+        'google-gemini-2.5-flash-lite-preview-06-17',
+        'google-gemini-2.5-flash-lite'
     ];
     
 
