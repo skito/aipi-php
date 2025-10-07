@@ -76,6 +76,30 @@ class Thread
         }
     }
 
+    public function ChangeToFallbackModel($modelName=null)
+    {
+        $_fallbackModel = null;
+        if ($modelName != null)
+        {
+            foreach ($this->_fallbackModels as $fallbackModel)
+            {
+                if ($fallbackModel->model == $modelName)
+                {
+                    $_fallbackModel = $fallbackModel;
+                    break;
+                }
+            }
+        }
+        else $_fallbackModel = $this->_GetNextFallbackModel();
+            
+        if ($_fallbackModel)
+        {
+            $this->ChangeModel($_fallbackModel->model, $_fallbackModel->apikey, $_fallbackModel->opts);
+            return true;
+        }
+        else return false;
+    }
+
     public function GetModel()
     {
         return $this->_model;
