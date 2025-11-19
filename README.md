@@ -394,6 +394,7 @@ $thread->OnModelChange(function($e) {
 Supported models by vendors.
 
 **OpenAI** [(examples)](docs/openai.md)
+- openai-gpt-5.1
 - openai-gpt-5
 - openai-gpt-5-mini
 - openai-gpt-5-nano
