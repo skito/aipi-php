@@ -14,6 +14,7 @@ class OpenAI_Completions extends ModelBase implements IModel
     private $_lastError = '';
     
     private static $_supported = [
+        'openai-gpt-5.1',
         'openai-gpt-5',
         'openai-gpt-5-mini',
         'openai-gpt-5-nano',
