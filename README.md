@@ -394,8 +394,6 @@ $thread->OnModelChange(function($e) {
 Supported models by vendors.
 
 **OpenAI** [(examples)](docs/openai.md)
-- openai-gpt-5.1-codex-max
-- openai-gpt-5.1-codex-mini
 - openai-gpt-5.2-codex
 - openai-gpt-5.2-pro
 - openai-gpt-5.2-chat-latest
