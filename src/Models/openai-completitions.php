@@ -14,10 +14,22 @@ class OpenAI_Completions extends ModelBase implements IModel
     private $_lastError = '';
     
     private static $_supported = [
+        'openai-gpt-5.1-codex-max',
+        'openai-gpt-5.1-codex-mini',
+        'openai-gpt-5.2-codex',
+        'openai-gpt-5.2-pro',
+        'openai-gpt-5.2-chat-latest',
+        'openai-gpt-5.2',
+        'openai-gpt-5.1-codex-max',
+        'openai-gpt-5.1-codex-mini',
+        'openai-gpt-5.1-codex',
+        'openai-gpt-5.1-chat-latest',
         'openai-gpt-5.1',
         'openai-gpt-5',
+        'openai-gpt-5-pro',
         'openai-gpt-5-mini',
         'openai-gpt-5-nano',
+        'openai-gpt-5-codex',
         'openai-gpt-5-chat-latest',
         'openai-gpt-4.5-preview', // Depricated
         'openai-gpt-4',

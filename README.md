@@ -394,8 +394,19 @@ $thread->OnModelChange(function($e) {
 Supported models by vendors.
 
 **OpenAI** [(examples)](docs/openai.md)
+- openai-gpt-5.1-codex-max
+- openai-gpt-5.1-codex-mini
+- openai-gpt-5.2-codex
+- openai-gpt-5.2-pro
+- openai-gpt-5.2-chat-latest
+- openai-gpt-5.2
+- openai-gpt-5.1-codex-max
+- openai-gpt-5.1-codex-mini
+- openai-gpt-5.1-codex
+- openai-gpt-5.1-chat-latest
 - openai-gpt-5.1
 - openai-gpt-5
+- openai-gpt-5-pro
 - openai-gpt-5-mini
 - openai-gpt-5-nano
 - openai-gpt-5-chat-latest
@@ -446,6 +457,8 @@ Supported models by vendors.
 - anthropic-claude-3-opus-latest
 
 **Google DeepMind** [(examples)](docs/google.md)
+- google-gemini-3-pro-preview
+- google-gemini-3-flash-preview
 - google-gemini-2.5-pro
 - google-gemini-2.5-flash
 - google-gemini-2.5-flash-lite
@@ -467,6 +480,8 @@ Supported models by vendors.
 - google-gemini-1.5-flash
 
 **xAI** [(examples)](docs/xai.md)
+- xai-grok-4-1-fast-non-reasoning-latest
+- xai-grok-4-1-fast-reasoning-latest
 - xai-grok-code-fast
 - xai-grok-4-latest
 - xai-grok-4-fast-non-reasoning-latest
