@@ -388,12 +388,43 @@ $thread->OnModelChange(function($e) {
     // Continue callback logic ...
 });
 ```
+
+### Global options and hooks
+```php
+/***********************/
+/* Set global API keys */
+/***********************/
+\AIpi\Thread::RegisterDefaultAPIKey('openai-', $apiKey); // For all OpenAI models
+\AIpi\Thread::RegisterDefaultAPIKey('openai-gpt-5.4', $apiKey); // For OpenAI GPT 5.4 series
+\AIpi\Thread::RegisterDefaultAPIKey('openai-gpt-5.4-nano', $apiKey); // For OpenAI GPT 5.4 Nano only
+
+/****************************/
+/* Set global model options */
+/****************************/
+\AIpi\Thread::RegisterDefaultOptions('openai-', ['reasoning' => ['effort' => 'medium']]); // For all OpenAI models
+\AIpi\Thread::RegisterDefaultOptions('openai-gpt-5.4', ['reasoning' => ['effort' => 'high']]); // For OpenAI GPT 5.4 series
+\AIpi\Thread::RegisterDefaultOptions('openai-gpt-5.4-nano', ['reasoning' => ['effort' => 'low']]); // For OpenAI GPT 5.4 Nano only
+
+/********************************/
+/* Callback on AIpi\Thread init */
+/********************************/
+\AIpi\Thread::OnInit(function($e) {
+    // Do something when new thread is created
+    // ...
+});
+```
 <br>
 
 ## Supported models
 Supported models by vendors.
 
 **OpenAI** [(examples)](docs/openai.md)
+- openai-gpt-5.4-nano,
+- openai-gpt-5.4-mini,
+- openai-gpt-5.4-pro,
+- openai-gpt-5.4,
+- openai-gpt-5.3-codex,
+- openai-gpt-5.3-chat-latest,
 - openai-gpt-5.2-codex
 - openai-gpt-5.2-pro
 - openai-gpt-5.2-chat-latest
@@ -445,6 +476,10 @@ Supported models by vendors.
 - openai-text-moderation-stable
 
 **Anthropic** [(examples)](docs/anthropic.md)
+- anthropic-claude-opus-4-7
+- anthropic-claude-sonnet-4-6
+- anthropic-claude-opus-4-6      
+- anthropic-claude-haiku-4-5
 - anthropic-claude-sonnet-4-5
 - anthropic-claude-opus-4-1
 - anthropic-claude-sonnet-4-0
@@ -455,6 +490,9 @@ Supported models by vendors.
 - anthropic-claude-3-opus-latest
 
 **Google DeepMind** [(examples)](docs/google.md)
+- google-gemini-3.1-pro-preview
+- google-gemini-3.1-flash-lite-preview
+- google-text-embedding-004
 - google-gemini-3-pro-preview
 - google-gemini-3-flash-preview
 - google-gemini-2.5-pro
