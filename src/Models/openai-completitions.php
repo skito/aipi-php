@@ -14,6 +14,12 @@ class OpenAI_Completions extends ModelBase implements IModel
     private $_lastError = '';
     
     private static $_supported = [
+        'openai-gpt-5.4-nano',
+        'openai-gpt-5.4-mini',
+        'openai-gpt-5.4-pro',
+        'openai-gpt-5.4',
+        'openai-gpt-5.3-codex',
+        'openai-gpt-5.3-chat-latest',
         'openai-gpt-5.2-codex',
         'openai-gpt-5.2-pro',
         'openai-gpt-5.2-chat-latest',
@@ -52,9 +58,9 @@ class OpenAI_Completions extends ModelBase implements IModel
     ];
     
 
-    public function __construct($name = 'openai-gpt-4.1')
+    public function __construct($name = 'openai-gpt-5.4')
     {
-        $this->_name = in_array($name, self::$_supported) ? $name : 'openai-gpt-4.1';
+        $this->_name = in_array($name, self::$_supported) ? $name : 'openai-gpt-5.4';
     }
 
     public function GetName()
@@ -136,7 +142,7 @@ class OpenAI_Completions extends ModelBase implements IModel
             'store', 'metadata', 'frequency_penalty', 'logit_bias', 'logprobs', 'top_logprobs', 
             'max_tokens', 'max_completion_tokens', 'n', 'modalities', 'prediction', 'audio',
             'presence_penalty', 'response_format', 'service_tier', 'stop', 'stream', 'stream_options',
-            'temperature', 'top_p', 'parallel_tool_calls', 'user'
+            'temperature', 'top_p', 'parallel_tool_calls', 'user', 'reasoning', 'reasoning_effort'
         ];
         
         foreach ($supportedAddonData as $key) {
@@ -218,6 +224,7 @@ class OpenAI_Completions extends ModelBase implements IModel
         if (isset($message->function_call)) {
             $role = MessageRole::TOOL;
             $content = json_encode([
+                'thoughts' => $message->content ?? '',
                 'calls' => [
                     [
                         'name' => $message->function_call->name,

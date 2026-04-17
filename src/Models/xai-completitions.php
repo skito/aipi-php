@@ -31,9 +31,9 @@ class xAI_Completions extends ModelBase implements IModel
     ];
     
 
-    public function __construct($name = 'xai-grok-3-latest')
+    public function __construct($name = 'xai-grok-4-latest')
     {
-        $this->_name = in_array($name, self::$_supported) ? $name : 'xai-grok-3-latest';
+        $this->_name = in_array($name, self::$_supported) ? $name : 'xai-grok-4-latest';
     }
 
     public function GetName()
@@ -216,7 +216,10 @@ class xAI_Completions extends ModelBase implements IModel
                 }
             }
             
-            $content = json_encode(['calls' => $calls], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+            $content = json_encode([
+                'thoughts' => $message->content ?? '',
+                'calls' => $calls
+            ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         }
 
         return new Message($content, $role);

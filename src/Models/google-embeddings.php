@@ -14,7 +14,8 @@ class Google_Embeddings extends ModelBase implements IModel
     private $_lastError = '';
     
     private static $_supported = [
-        'google-text-embedding-004'
+        'google-text-embedding-004',
+        'google-gemini-embedding-001'
     ];
     
 

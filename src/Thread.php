@@ -20,19 +20,41 @@ class Thread
     private $_modelChangeCallbacks = [];
     private $_fallbackModels = [];
 
-    public function __construct($model, $apikey, $opts=[])
+    private static $_defaultAPIKeys = [];
+    private static $_defaultOptions = [];
+    private static $_initCallbacks = [];
+
+    public function __construct($model, $apikey=null, $opts=null)
     {
+        if (is_array($apikey))
+        {
+            if ($opts == null) $opts = $apikey;
+            else if (is_object($opts)) $opts = (array)$opts;
+
+            $apikey = null;
+        }
+        elseif ($apikey !== null) 
+        {
+            $apikey = (string)$apikey;
+        }
+
         $this->_apikey = $apikey;  
         $this->options = (object)array_merge([
             'throwOnError' => true
         ], (array)$opts);
 
-        $this->ChangeModel($model, $apikey);
+        
+        $this->_RunCallbacks(self::$_initCallbacks, (object)[
+            'thread' => $this, 
+            'model' => $this->_model
+        ]);
+        $this->ChangeModel($model, $apikey);        
     }
 
-    public function ChangeModel($model, $apikey, $opts=null)
+    public function ChangeModel($model, $apikey=null, $opts=null)
     {
-        $this->_apikey = $apikey;
+        $this->_apikey = $apikey ?? $this->_GetDefaultAPIKey($model);
+        $prevModel = $this->_model;
 
         if (is_string($model))
             $this->_model = ModelBase::Get($model);
@@ -42,11 +64,22 @@ class Thread
         if ($this->_model == null)
             throw new \Exception('Model not supported or name typo.');
 
-        if ($opts !== null) {
+        if ($opts == null) $opts = $this->_GetFallbackModelOptions($this->_model) ?? [];
+        $defaultModelOptions = self::GetDefaultOptions($this->_model->GetName()) ?? [];
+        $defaultModelOptions = array_merge($defaultModelOptions, $opts);
+        
+        $defaultOptions = array_merge([
+            'throwOnError' => true
+        ], (array)$defaultModelOptions);
+        $this->options = (object)array_merge([
+            'throwOnError' => true
+        ], (array)$defaultOptions);
+
+        /*if ($opts !== null) {
             $this->options = (object)array_merge([
                 'throwOnError' => true
             ], (array)$opts);
-        }
+        }*/
 
         $this->_inputTokens = 0;
         $this->_outputTokens = 0;
@@ -54,12 +87,39 @@ class Thread
 
         $this->_RunCallbacks($this->_modelChangeCallbacks, (object)[
             'thread' => $this, 
-            'model' => $this->_model
+            'model' => $this->_model,
+            'prevModel' => $prevModel
         ]);
     }
 
-    public function AddFallbackModel($model, $apikey, $opts=null)
+    public function AddFallbackModels($models)
     {
+        if (is_array($models))
+        {
+            foreach ($models as $model)
+            {
+                $modelName = is_array($model) ? $model[0] : $model;
+                $apikey = is_array($model) ? ($model[1] ?? null) : null;
+                $opts = is_array($model) ? ($model[2] ?? null) : null;
+                $this->AddFallbackModel($modelName, $apikey, $opts);
+            }
+        }
+    }
+
+    public function AddFallbackModel($model, $apikey=null, $opts=null)
+    {
+        if (is_array($apikey))
+        {
+            if ($opts == null) $opts = $apikey;
+            else if (is_object($opts)) $opts = (array)$opts;
+
+            $apikey = null;
+        }
+        elseif ($apikey !== null) 
+        {
+            $apikey = (string)$apikey;
+        }
+
         $this->_fallbackModels[] = (object)[
             'model' => $model,
             'apikey' => $apikey,
@@ -148,6 +208,18 @@ class Thread
         }
     }
 
+    public function ResetThread($keepInstructions=true)
+    {
+        if ($keepInstructions)
+        {
+            $this->messages = array_filter($this->messages, function($message) {
+                return $message->role == MessageRole::SYSTEM;
+            });
+        }
+        else $this->messages = [];
+        
+    }
+
     public function AddTool($tool)
     {
         if ($tool instanceof ITool)
@@ -189,13 +261,13 @@ class Thread
 
     public function AddMessageCallback($callback)
     {
-        $key = $this->_GetCallbackKey($callback);
+        $key = self::_GetCallbackKey($callback);
         $this->_messageCallbacks[$key] = $callback;
     }
 
     public function RemoveMessageCallback($callback)
     {
-        $key = $this->_GetCallbackKey($callback);
+        $key = self::_GetCallbackKey($callback);
         unset($this->_messageCallbacks[$key]);
     }
 
@@ -208,14 +280,32 @@ class Thread
 
     public function AddModelChangeCallback($callback)
     {
-        $key = $this->_GetCallbackKey($callback);
+        $key = self::_GetCallbackKey($callback);
         $this->_modelChangeCallbacks[$key] = $callback;
     }
 
     public function RemoveModelChangeCallback($callback)
     {
-        $key = $this->_GetCallbackKey($callback);
+        $key = self::_GetCallbackKey($callback);
         unset($this->_modelChangeCallbacks[$key]);
+    }
+
+    // Alias for AddInitCallback
+    public static function OnInit($callback)
+    {
+        self::AddInitCallback($callback);
+    }
+
+    public static function AddInitCallback($callback)
+    {
+        $key = self::_GetCallbackKey($callback);
+        self::$_initCallbacks[$key] = $callback;
+    }
+
+    public static function RemoveInitCallback($callback)
+    {
+        $key = self::_GetCallbackKey($callback);
+        unset(self::$_initCallbacks[$key]);
     }
 
 
@@ -365,7 +455,7 @@ class Thread
         return $message;
     }
 
-    private function _GetCallbackKey($callback)
+    private static function _GetCallbackKey($callback)
     {
         if (is_array($callback)) {
             // For object methods or class static methods
@@ -407,4 +497,52 @@ class Thread
         return $isUsingFallback ? null : $this->_fallbackModels[0];
     }
 
+    private function _GetFallbackModelOptions($model)
+    {
+        $modelName = is_object($model) ? $model->GetName() : $model;
+        foreach ($this->_fallbackModels as $fallbackModel)
+        {
+            if ($fallbackModel->model == $modelName)
+            {
+                return $fallbackModel->opts;
+            }
+        }
+
+        return null;
+    }
+
+    public static function RegisterDefaultAPIKey($model, $apikey)
+    {
+        $modelName = is_object($model) ? $model->GetName() : $model;
+        self::$_defaultAPIKeys[$modelName] = $apikey;
+    }
+
+    private static function _GetDefaultAPIKey($model)
+    {
+        $modelName = is_object($model) ? $model->GetName() : $model;
+        foreach (self::$_defaultAPIKeys as $keyModel => $keyValue)
+        {
+            if (strpos($modelName, $keyModel) === 0)
+                return $keyValue;
+        }
+
+        return null;
+    }
+
+    public static function RegisterDefaultOptions($model, $options)
+    {
+        $modelName = is_object($model) ? $model->GetName() : $model;
+        self::$_defaultOptions[$modelName] = $options;
+    }
+
+    public static function GetDefaultOptions($model)
+    {
+        $modelName = is_object($model) ? $model->GetName() : $model;
+        foreach (self::$_defaultOptions as $optionsModel => $optionsValue)
+        {
+            if (strpos($modelName, $optionsModel) === 0)
+                return $optionsValue;
+        }
+        return null;
+    }
 }

@@ -34,13 +34,15 @@ class Google_Completions extends ModelBase implements IModel
         'google-gemini-2.5-flash-lite-preview-06-17',
         'google-gemini-2.5-flash-lite',
         'google-gemini-3-pro-preview',
-        'google-gemini-3-flash-preview'
+        'google-gemini-3-flash-preview',        
+        'google-gemini-3.1-pro-preview',
+        'google-gemini-3.1-flash-lite-preview',
     ];
     
 
-    public function __construct($name = 'google-gemini-1.5-flash')
+    public function __construct($name = 'google-gemini-3-flash-preview')
     {
-        $this->_name = in_array($name, self::$_supported) ? $name : 'google-gemini-1.5-flash';
+        $this->_name = in_array($name, self::$_supported) ? $name : 'google-gemini-3-flash-preview';
     }
 
     public function GetName()
@@ -260,6 +262,8 @@ class Google_Completions extends ModelBase implements IModel
         $data = array_merge($data, $additionalData);
 
         // Add tools if provided and supported
+        $googleToolObject = [];
+
         if (!empty($tools)) {
             $toolsArray = [];
             foreach ($tools as $tool) {
@@ -284,8 +288,22 @@ class Google_Completions extends ModelBase implements IModel
                 }
             }
             if (!empty($toolsArray)) {
-                $data['tools'] = [
-                    'function_declarations' => $toolsArray
+                $googleToolObject['function_declarations'] = $toolsArray;
+            }
+        }
+
+        if (!empty($options->google_search_retrieval)) {
+            $googleToolObject['google_search'] = (object)[];
+        }
+
+        if (!empty($googleToolObject)) {
+            $data['tools'] = [$googleToolObject];
+
+            // When mixing built-in tools (e.g. google_search) with function_declarations,
+            // Google requires this top-level toolConfig flag to expose server-side tool invocations.
+            if (isset($googleToolObject['google_search']) && isset($googleToolObject['function_declarations'])) {
+                $data['toolConfig'] = [
+                    'includeServerSideToolInvocations' => true
                 ];
             }
         }
@@ -404,9 +422,19 @@ class Google_Completions extends ModelBase implements IModel
             }
         }
 
+        $thoughts = '';
+        if (isset($content->parts) && is_array($content->parts)) {
+            foreach ($content->parts as $part) {
+                if (isset($part->text)) {
+                    $thoughts .= $part->text;
+                }
+            }
+        }
+
         if (!empty($functionCalls)) {
             $role = MessageRole::TOOL;
             $content = json_encode([
+                'thoughts' => $thoughts,
                 'calls' => $functionCalls
             ], JSON_UNESCAPED_UNICODE);
         } elseif (!empty($functionResponses)) {

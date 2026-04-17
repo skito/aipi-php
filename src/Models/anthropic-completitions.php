@@ -22,13 +22,18 @@ class Anthropic_Completions extends ModelBase implements IModel
         'anthropic-claude-opus-4-0',
         'anthropic-claude-sonnet-4-0',
         'anthropic-claude-opus-4-1',
-        'anthropic-claude-sonnet-4-5'
+        'anthropic-claude-sonnet-4-5',
+        'anthropic-claude-haiku-4-5',
+        'anthropic-claude-sonnet-4-6',
+        'anthropic-claude-opus-4-6',
+        'anthropic-claude-opus-4-7'
+        
     ];
     
 
-    public function __construct($name = 'anthropic-claude-sonnet-4-0')
+    public function __construct($name = 'anthropic-claude-sonnet-4-6')
     {
-        $this->_name = in_array($name, self::$_supported) ? $name : 'anthropic-claude-sonnet-4-0';
+        $this->_name = in_array($name, self::$_supported) ? $name : 'anthropic-claude-sonnet-4-6';
     }
 
     public function GetName()
@@ -196,9 +201,17 @@ class Anthropic_Completions extends ModelBase implements IModel
 
         // Handle tool calls if present
         if (isset($result->content) && is_array($result->content)) {
+            $thoughts = '';
+            foreach ($result->content as $content) {
+                if ($content->type === 'text') {
+                    $thoughts .= $content->text;
+                }
+            }
+            
             foreach ($result->content as $content) {
                 if ($content->type === 'tool_use') {
                     return new Message(json_encode([
+                        'thoughts' => $thoughts,
                         'calls' => [
                             [
                                 'name' => $content->name,
